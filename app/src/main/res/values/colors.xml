@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFD600</color>
+    <color name="colorPrimaryDark">#D6B506</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="lancerbackcolor">#FFD600</color>
+    <color name="ColorTitleLancer">#FFFFFF</color>
+    <color name="textDesc_color">#221F1F</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#464646</color>
+    <color name="blue_light">#A6E0FC</color>
+
+    <color name="colorBackground">#f9f9fa</color>
+    <color name="colorTextSubtitle">#4e4e4e</color>
+    <color name="colorTextTitle">#262626</color>
+    <color name="home_back_color">#F6F6F6</color>
+</resources>
