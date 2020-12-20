@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.luseen.spacenavigation.SpaceItem;
+import com.luseen.spacenavigation.SpaceNavigationView;
+import com.luseen.spacenavigation.SpaceOnClickListener;
+
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
@@ -20,6 +24,30 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        navigationView = findViewById(R.id.space);
+
+        navigationView.initWithSaveInstanceState(savedInstanceState);
+        navigationView.addSpaceItem(new SpaceItem("", R.drawable.ic_home_black_24));
+        navigationView.addSpaceItem(new SpaceItem("", R.drawable.ic_add_black_24));
+
+        navigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
+            @Override
+            public void onCentreButtonClick() {
+                Toast.makeText(HomeActivity.this,"onCentreButtonClick", Toast.LENGTH_SHORT).show();
+                navigationView.setCentreButtonSelectable(true);
+            }
+
+            @Override
+            public void onItemClick(int itemIndex, String itemName) {
+                Toast.makeText(HomeActivity.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onItemReselected(int itemIndex, String itemName) {
+                Toast.makeText(HomeActivity.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         listView = findViewById(R.id.list_view);
 
@@ -42,28 +70,4 @@ public class HomeActivity extends AppCompatActivity {
         list.add(new ListPojo("Afro", "my africa queen", R.drawable.md11));
 
     }
-
-    navigationView = findViewById(R.id.space);
-
-        navigationView.initWithSaveInstanceState(savedInstanceState);
-        navigationView.addSpaceItem(new SpaceItem("", R.drawable.ic_home_black_24));
-        navigationView.addSpaceItem(new SpaceItem("", R.drawable.ic_add_black_24));
-
-        navigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
-        @Override
-        public void onCentreButtonClick() {
-            Toast.makeText(MainActivity.this,"onCentreButtonClick", Toast.LENGTH_SHORT).show();
-            navigationView.setCentreButtonSelectable(true);
-        }
-
-        @Override
-        public void onItemClick(int itemIndex, String itemName) {
-            Toast.makeText(MainActivity.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onItemReselected(int itemIndex, String itemName) {
-            Toast.makeText(MainActivity.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();
-        }
-    });
 }

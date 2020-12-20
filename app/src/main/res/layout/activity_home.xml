@@ -31,6 +31,7 @@
         app:inactive_centre_button_icon_color="@color/white"
         app:active_centre_button_background_color="#F44336"
         app:space_item_icon_only_size="@dimen/space_item_icon_only_size"
-        app:space_item_text_size="@dimen/space_item_text_default_size" />
+        app:space_item_text_size="@dimen/space_item_text_default_size"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
