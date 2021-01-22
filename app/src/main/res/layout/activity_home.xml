@@ -6,32 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
-    <ListView
-        android:id="@+id/list_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@null"
-        android:scrollbars="vertical"
-        android:background="@color/home_back_color"
-        android:padding="6dp"/>
-
-    <com.luseen.spacenavigation.SpaceNavigationView
-        android:id="@+id/space"
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_alignParentBottom="true"
-        app:active_item_color="@color/colorPrimary"
-        app:centre_button_color="#FFAB00"
-        app:inactive_item_color="@color/black"
-        app:active_centre_button_icon_color="@color/white"
-        app:space_background_color="@color/white"
-        app:centre_button_icon="@drawable/ic_favorite_black_24"
-        app:space_item_icon_size="30dp"
-        app:inactive_centre_button_icon_color="@color/white"
-        app:active_centre_button_background_color="@color/colorPrimary"
-        app:space_item_icon_only_size="@dimen/space_item_icon_only_size"
-        app:space_item_text_size="@dimen/space_item_text_default_size"
-        tools:ignore="MissingConstraints" />
+        android:id="@+id/recyclerview"
+        android:scrollbars="vertical">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </RelativeLayout>

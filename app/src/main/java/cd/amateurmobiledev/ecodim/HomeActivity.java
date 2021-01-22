@@ -1,75 +1,52 @@
 package cd.amateurmobiledev.ecodim;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import com.luseen.spacenavigation.SpaceItem;
-import com.luseen.spacenavigation.SpaceNavigationView;
-import com.luseen.spacenavigation.SpaceOnClickListener;
+import java.util.List;
 
-import java.util.ArrayList;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity {
 
-    ListView listView;
-    ArrayList<ListPojo> list;
-    AdapterList adapterList;
-
-    SpaceNavigationView navigationView;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerAdapter adapter;
+    private List<Contact> contacts;
+    private ApiInterface apiInterface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        navigationView = findViewById(R.id.space);
+        recyclerView = findViewById(R.id.recyclerview);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
 
-        navigationView.initWithSaveInstanceState(savedInstanceState);
-        navigationView.addSpaceItem(new SpaceItem("", R.drawable.ic_home_black_24));
-        navigationView.addSpaceItem(new SpaceItem("", R.drawable.ic_search_black_24));
-        navigationView.addSpaceItem(new SpaceItem("", R.drawable.ic_baseline_notifications_24));
-        navigationView.addSpaceItem(new SpaceItem("", R.drawable.ic_baseline_account_circle_24));
+        apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 
-        navigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
+        Call<List<Contact>> call = apiInterface.getContacts();
+
+        call.enqueue(new Callback<List<Contact>>() {
             @Override
-            public void onCentreButtonClick() {
-                Toast.makeText(HomeActivity.this,"onCentreButtonClick", Toast.LENGTH_SHORT).show();
-                navigationView.setCentreButtonSelectable(true);
+            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
+                contacts = response.body();
+                adapter = new RecyclerAdapter(contacts);
+                recyclerView.setAdapter(adapter);
             }
 
             @Override
-            public void onItemClick(int itemIndex, String itemName) {
-                Toast.makeText(HomeActivity.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();
-            }
+            public void onFailure(Call<List<Contact>> call, Throwable t) {
 
-            @Override
-            public void onItemReselected(int itemIndex, String itemName) {
-                Toast.makeText(HomeActivity.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();
             }
         });
-
-        listView = findViewById(R.id.list_view);
-
-        listShow();
-
-        adapterList = new AdapterList<>(this,list);
-        listView.setAdapter(adapterList);
-
     }
 
-    private void listShow() {
-        list = new ArrayList<ListPojo>();
-
-        list.add(new ListPojo("Afro", "my africa queen", R.drawable.md11));
-        list.add(new ListPojo("Afro", "my africa queen", R.drawable.md11));
-        list.add(new ListPojo("Afro", "my africa queen", R.drawable.md11));
-        list.add(new ListPojo("Afro", "my africa queen", R.drawable.md11));
-        list.add(new ListPojo("Afro", "my africa queen", R.drawable.md11));
-        list.add(new ListPojo("Afro", "my africa queen", R.drawable.md11));
-        list.add(new ListPojo("Afro", "my africa queen", R.drawable.md11));
-
-    }
 }
