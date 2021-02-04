@@ -2,4 +2,5 @@
     <string name="app_name">Ecodim</string>
     <string name="title_id">Title</string>
     <string name="description_id">Description</string>
+    <string name="txt_desc">Pour l\'education de vos enfants</string>
 </resources>
