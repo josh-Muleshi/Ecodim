@@ -39,7 +39,6 @@ fun AppNavHost(
             deepLinks = listOf(navDeepLink {
                 uriPattern = "https://ecodim.app/topic/{topicUid}"
             })
-
         ) {
             TopicDetailScreen(
                 onBackClick = navController::navigateUp
