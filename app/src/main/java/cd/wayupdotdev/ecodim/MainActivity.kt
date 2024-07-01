@@ -26,14 +26,15 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         installSplashScreen()
 
         checkForUpdates()
 
         setContent {
             EcodimTheme {
-                //Todo
+                Scaffold {
+                    Text(text = "Hello Josh", modifier = Modifier.padding(it))
+                }
             }
         }
     }
