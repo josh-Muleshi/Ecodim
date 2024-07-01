@@ -7,9 +7,10 @@ import androidx.navigation.NavOptionsBuilder
 
 sealed class Destination(val route: String) {
     object HomeScreen : Destination("home")
-    object TopicDetail : Destination("event-detail/{eventUid}") {
-        fun createRoute(eventUid: String): String {
-            return "event-detail/$eventUid"
+    object SettingsScreen : Destination("settings")
+    object TopicDetailScreen : Destination("topic-detail/{topicUid}") {
+        fun createRoute(topicUid: String): String {
+            return "topic-detail/$topicUid"
         }
     }
 }

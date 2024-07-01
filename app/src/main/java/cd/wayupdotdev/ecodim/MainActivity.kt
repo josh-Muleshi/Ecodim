@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import cd.wayupdotdev.ecodim.core.ui.installUi
 import cd.wayupdotdev.ecodim.ui.theme.EcodimTheme
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -27,16 +28,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
+        installUi()
 
         checkForUpdates()
-
-        setContent {
-            EcodimTheme {
-                Scaffold {
-                    Text(text = "Hello Josh", modifier = Modifier.padding(it))
-                }
-            }
-        }
     }
 
     override fun onResume() {
