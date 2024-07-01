@@ -67,9 +67,16 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    //in-app update
     implementation(libs.app.update)
     implementation(libs.app.update.ktx)
 
+    //material icons extended
     implementation(libs.androidx.material.icons.extended)
+
+    //new android splash
     implementation(libs.androidx.core.splashscreen)
+
+    //navigation
+    implementation(libs.androidx.navigation.compose)
 }
