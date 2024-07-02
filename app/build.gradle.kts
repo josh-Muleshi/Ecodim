@@ -80,6 +80,7 @@ dependencies {
 
     //navigation
     implementation(libs.androidx.navigation.compose)
+    androidTestImplementation(libs.androidx.navigation.testing)
 
     //preferences
     implementation(libs.androidx.datastore.preferences)
