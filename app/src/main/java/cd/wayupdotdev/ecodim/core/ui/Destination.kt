@@ -6,9 +6,9 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavOptionsBuilder
 
 sealed class Destination(val route: String) {
-    object HomeScreen : Destination("home")
-    object SettingsScreen : Destination("settings")
-    object TopicDetailScreen : Destination("topic-detail/{topicUid}") {
+    data object HomeScreen : Destination("home")
+    data object SettingsScreen : Destination("settings")
+    data object TopicDetailScreen : Destination("topic-detail/{topicUid}") {
         fun createRoute(topicUid: String): String {
             return "topic-detail/$topicUid"
         }
