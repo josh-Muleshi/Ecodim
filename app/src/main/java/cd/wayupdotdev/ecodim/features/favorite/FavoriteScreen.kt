@@ -1,10 +1,10 @@
-package cd.wayupdotdev.ecodim.features.about
+package cd.wayupdotdev.ecodim.features.favorite
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun AboutScreen(
+fun FavoriteScreen(
     onBackClick: () -> Unit,
     darkMode: Boolean,
     onDarkModeChange: (Boolean) -> Unit
