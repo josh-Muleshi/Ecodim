@@ -13,6 +13,9 @@ sealed class Destination(val route: String) {
             return "topic-detail/$topicUid"
         }
     }
+    data object AboutScreen : Destination("about")
+    data object CommentScreen : Destination("comment")
+    data object FavoriteScreen : Destination("favorite")
 }
 
 fun NavDestination?.isCurrent(destination: Destination): Boolean {

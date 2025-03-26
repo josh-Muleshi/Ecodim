@@ -3,6 +3,7 @@ package cd.wayupdotdev.ecodim.core.ui
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -40,10 +41,10 @@ fun BottomNavigationBar(navController: NavHostController, destination: NavDestin
         )
 
         NavigationBarItem(
-            selected = destination.isCurrent(Destination.SettingsScreen),
+            selected = destination.isCurrent(Destination.FavoriteScreen),
             onClick = {
-                if (!destination.isCurrent(Destination.SettingsScreen)) {
-                    navController.navigate(Destination.SettingsScreen) {
+                if (!destination.isCurrent(Destination.FavoriteScreen)) {
+                    navController.navigate(Destination.FavoriteScreen) {
                         popUpTo(Destination.HomeScreen.route) {
                             saveState = true
                         }
@@ -53,7 +54,7 @@ fun BottomNavigationBar(navController: NavHostController, destination: NavDestin
                 }
             },
             label = {
-                Text(text = "Agenda")
+                Text(text = "Favoris")
             },
             icon = {
                 Icon(
@@ -64,10 +65,10 @@ fun BottomNavigationBar(navController: NavHostController, destination: NavDestin
         )
 
         NavigationBarItem(
-            selected = destination.isCurrent(Destination.TopicDetailScreen),
+            selected = destination.isCurrent(Destination.AboutScreen),
             onClick = {
-                if (!destination.isCurrent(Destination.TopicDetailScreen)) {
-                    navController.navigate(Destination.TopicDetailScreen) {
+                if (!destination.isCurrent(Destination.AboutScreen)) {
+                    navController.navigate(Destination.AboutScreen) {
                         popUpTo(Destination.HomeScreen.route) {
                             saveState = true
                         }
@@ -77,11 +78,11 @@ fun BottomNavigationBar(navController: NavHostController, destination: NavDestin
                 }
             },
             label = {
-                Text(text = "Profil")
+                Text(text = "Apropos")
             },
             icon = {
                 Icon(
-                    imageVector = Icons.Rounded.Person,
+                    imageVector = Icons.Rounded.Info,
                     contentDescription = null
                 )
             }

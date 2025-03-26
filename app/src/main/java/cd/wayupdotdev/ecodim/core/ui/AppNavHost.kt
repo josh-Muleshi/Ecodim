@@ -6,6 +6,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
+import cd.wayupdotdev.ecodim.features.about.AboutScreen
+import cd.wayupdotdev.ecodim.features.comments.CommentScreen
+import cd.wayupdotdev.ecodim.features.favorite.FavoriteScreen
 import cd.wayupdotdev.ecodim.features.home.HomeScreen
 import cd.wayupdotdev.ecodim.features.setting.SettingScreen
 import cd.wayupdotdev.ecodim.features.topicDetail.TopicDetailScreen
@@ -47,6 +50,30 @@ fun AppNavHost(
 
         composable(route = Destination.SettingsScreen.route) {
             SettingScreen (
+                onBackClick = { navController.navigateUp() },
+                darkMode = isDarkTheme,
+                onDarkModeChange = onDarkModeChange
+            )
+        }
+
+        composable(route = Destination.AboutScreen.route) {
+            AboutScreen (
+                onBackClick = { navController.navigateUp() },
+                darkMode = isDarkTheme,
+                onDarkModeChange = onDarkModeChange
+            )
+        }
+
+        composable(route = Destination.CommentScreen.route) {
+            CommentScreen (
+                onBackClick = { navController.navigateUp() },
+                darkMode = isDarkTheme,
+                onDarkModeChange = onDarkModeChange
+            )
+        }
+
+        composable(route = Destination.FavoriteScreen.route) {
+            FavoriteScreen (
                 onBackClick = { navController.navigateUp() },
                 darkMode = isDarkTheme,
                 onDarkModeChange = onDarkModeChange
