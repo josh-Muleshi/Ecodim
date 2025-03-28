@@ -74,9 +74,7 @@ fun AppNavHost(
 
         composable(route = Destination.FavoriteScreen.route) {
             FavoriteScreen (
-                onBackClick = { navController.navigateUp() },
-                darkMode = isDarkTheme,
-                onDarkModeChange = onDarkModeChange
+                onBackBtnClicked = { navController.navigateUp() }
             )
         }
     }

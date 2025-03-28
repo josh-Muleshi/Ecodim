@@ -44,14 +44,20 @@ fun AboutScreen(
     modifier: Modifier = Modifier,
     onBackBtnClicked: () -> Unit
 ) {
-    val scrollState = rememberScrollState()
     val context = LocalContext.current
+    val scrollState = rememberScrollState()
 
     Scaffold(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = {  },
+                title = {
+                    Text(
+                        text = "Apropos",
+                        style = MaterialTheme.typography.titleLarge,
+                        textAlign = TextAlign.Center
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackBtnClicked) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "back btn")
