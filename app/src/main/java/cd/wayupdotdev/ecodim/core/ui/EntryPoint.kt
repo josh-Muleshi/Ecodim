@@ -8,9 +8,13 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -27,17 +31,9 @@ fun ComponentActivity.installUi() {
 
     val systemTheme =
         when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                true
-            }
-
-            Configuration.UI_MODE_NIGHT_NO -> {
-                false
-            }
-
-            else -> {
-                false
-            }
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            else -> false
         }
 
     setContent {
@@ -46,44 +42,64 @@ fun ComponentActivity.installUi() {
             .collectAsStateWithLifecycle(initialValue = systemTheme)
 
         val coroutineScope = rememberCoroutineScope()
-
+        val navController = rememberNavController()
+        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
         EcodimTheme(darkTheme = isDarkTheme) {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                val navController = rememberNavController()
-                val destination = navController
-                    .currentBackStackEntryAsState().value?.destination
-
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    bottomBar = {
-                        AnimatedVisibility(
-                            visible = shouldShowBottomNavigation(destination),
-                            enter = slideInVertically { it / 2 },
-                            exit = slideOutVertically { it / 2},
-                        ) {
-                            BottomNavigationBar(
-                                navController = navController,
-                                destination = destination
-                            )
-                        }
+                ModalNavigationDrawer(
+                    drawerState = drawerState,
+                    drawerContent = {
+                        AppDrawer(
+                            drawerState = drawerState,
+                            onCloseDrawer = { coroutineScope.launch { drawerState.close() } },
+                            onMenuItemClick = { menuItem ->
+                                when (menuItem) {
+                                    "Accueil" -> navController.navigate(Destination.HomeScreen.route)
+                                    "Communautés" -> println("Recherche lancée")
+                                    "Favoris" -> navController.navigate(Destination.FavoriteScreen.route)
+                                    "Recherche" -> println("Recherche lancée")
+                                    "Paramètres" -> navController.navigate(Destination.SettingsScreen.route)
+                                    "Aide & Support" -> println("Navigation vers Aide & Support")
+                                }
+                                coroutineScope.launch { drawerState.close() }
+                            }
+                        )
                     }
                 ) {
-                    AppNavHost(
-                        modifier = Modifier.padding(it),
-                        navController = navController,
-                        isDarkTheme = isDarkTheme,
-                        onDarkModeChange = { darkMode ->
-                            coroutineScope.launch {
-                                dataStoreUtil.saveTheme(
-                                    darkMode
+                    val destination = navController
+                        .currentBackStackEntryAsState().value?.destination
+
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        bottomBar = {
+                            AnimatedVisibility(
+                                visible = shouldShowBottomNavigation(destination),
+                                enter = slideInVertically { it / 2 },
+                                exit = slideOutVertically { it / 2 },
+                            ) {
+                                BottomNavigationBar(
+                                    navController = navController,
+                                    destination = destination
                                 )
                             }
                         }
-                    )
+                    ) { paddingValues ->
+                        AppNavHost(
+                            modifier = Modifier.padding(paddingValues),
+                            drawerState = drawerState,
+                            navController = navController,
+                            isDarkTheme = isDarkTheme,
+                            onDarkModeChange = { darkMode ->
+                                coroutineScope.launch {
+                                    dataStoreUtil.saveTheme(darkMode)
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }

@@ -1,5 +1,6 @@
 package cd.wayupdotdev.ecodim.core.ui
 
+import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -16,6 +17,7 @@ import cd.wayupdotdev.ecodim.features.topicDetail.TopicDetailScreen
 @Composable
 fun AppNavHost(
     modifier: Modifier,
+    drawerState: DrawerState,
     navController: NavHostController,
     isDarkTheme: Boolean,
     onDarkModeChange: (Boolean) -> Unit
@@ -27,6 +29,7 @@ fun AppNavHost(
     ) {
         composable(route = Destination.HomeScreen.route) {
             HomeScreen (
+                drawerState = drawerState,
                 onSearchBtnClicked = {},
                 onTopicItemClicked = { topicUid ->
                     navController.navigate(
