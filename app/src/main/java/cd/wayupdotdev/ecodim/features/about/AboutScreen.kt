@@ -1,5 +1,7 @@
 package cd.wayupdotdev.ecodim.features.about
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -42,6 +45,8 @@ fun AboutScreen(
     onBackBtnClicked: () -> Unit
 ) {
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -89,11 +94,11 @@ fun AboutScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "developpe par",
+                text = "développée par",
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontStyle = FontStyle.Italic
                 ),
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -108,7 +113,11 @@ fun AboutScreen(
 
             Row {
                 IconButton(
-                    onClick = {}
+                    onClick = {
+                        val githubUrl = "https://github.com/josh-Muleshi/Ecodim"
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(githubUrl))
+                        context.startActivity(intent)
+                    }
                 ) {
                     Icon(
                         modifier = Modifier.size(25.dp),
@@ -118,13 +127,24 @@ fun AboutScreen(
                 }
 
                 IconButton(
-                    onClick = {}
+                    onClick = {
+                        val playStoreUrl = "https://play.google.com/store/apps/details?id=ton.package.name"
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(playStoreUrl))
+                        context.startActivity(intent)
+                    }
                 ) {
                     Icon(imageVector = Icons.Default.StarOutline, contentDescription = "like")
                 }
 
                 IconButton(
-                    onClick = {}
+                    onClick = {
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_SUBJECT, "Essaie cette application géniale !")
+                            putExtra(Intent.EXTRA_TEXT, "Télécharge l'application ici : https://play.google.com/store/apps/details?id=ton.package.name")
+                        }
+                        context.startActivity(Intent.createChooser(shareIntent, "Partager l'application via"))
+                    }
                 ) {
                     Icon(imageVector = Icons.Default.Share, contentDescription = "share")
                 }
