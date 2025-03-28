@@ -35,7 +35,7 @@ fun AppNavHost(
                         )
                     )
                 },
-                onSettingClicked = {}
+                onSettingClicked = { navController.navigate(Destination.SettingsScreen.route) }
             )
         }
 
@@ -52,7 +52,9 @@ fun AppNavHost(
 
         composable(route = Destination.SettingsScreen.route) {
             SettingScreen (
-                onBackClick = { navController.navigateUp() },
+                onAboutBtnClicked = { navController.navigate(Destination.AboutScreen.route) },
+                onSecurityBtnClicked = {},
+                onBackBtnClicked = { navController.navigateUp()  },
                 darkMode = isDarkTheme,
                 onDarkModeChange = onDarkModeChange
             )
