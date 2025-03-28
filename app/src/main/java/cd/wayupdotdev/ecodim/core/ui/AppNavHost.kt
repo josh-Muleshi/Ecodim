@@ -60,9 +60,7 @@ fun AppNavHost(
 
         composable(route = Destination.AboutScreen.route) {
             AboutScreen (
-                onBackClick = { navController.navigateUp() },
-                darkMode = isDarkTheme,
-                onDarkModeChange = onDarkModeChange
+                onBackBtnClicked = { navController.navigateUp() }
             )
         }
 
