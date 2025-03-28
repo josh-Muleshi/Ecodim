@@ -73,11 +73,8 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onSearchBtnClicked: () -> Unit,
-    onShopCardBtnClicked: () -> Unit,
-    onProductItemClicked: (String) -> Unit,
-    onCategoryClicked: () -> Unit,
+    onTopicItemClicked: (String) -> Unit,
     onSettingClicked: () -> Unit,
-    onProfileClicked: () -> Unit,
    // viewModel: HomeViewModel = koinViewModel()
 ) {
     //val homeUiState by viewModel.homeUiState.collectAsState()
@@ -108,10 +105,7 @@ fun HomeScreen(
                     onMenuItemClick = { menuItem ->
                         when (menuItem) {
                             "Accueil" -> println("Navigation vers Accueil")
-                            "Catégories" -> onCategoryClicked()
-                            "Panier" -> onShopCardBtnClicked()
                             "Recherche" -> onSearchBtnClicked()
-                            "Profil" -> onProfileClicked()
                             "Paramètres" -> onSettingClicked()
                             "Aide & Support" -> println("Navigation vers Aide & Support")
                         }
@@ -131,7 +125,7 @@ fun HomeScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.avd_eco_orange_anim),
+                                painter = painterResource(id = R.drawable.logo1),
                                 contentDescription = "logo",
                                 modifier = Modifier.size(70.dp)
                             )
@@ -155,7 +149,7 @@ fun HomeScreen(
                     },
                     actions = {
                         IconButton(
-                            onClick = { onProfileClicked() },
+                            onClick = { onSettingClicked() },
                             modifier = modifier,
                             colors = IconButtonDefaults.filledIconButtonColors(
                                 containerColor = Color.Transparent
@@ -231,7 +225,7 @@ fun HomeScreen(
                     ) {
                         Column (
                             modifier = Modifier
-                                .clickable { onProductItemClicked("") }
+                                .clickable { onTopicItemClicked("") }
                                 .padding(24.dp)
                         ){
                             Row(
@@ -445,10 +439,7 @@ fun DrawerContent(
 private fun HomePrev() {
     HomeScreen(
         onSearchBtnClicked = {},
-        onShopCardBtnClicked = {},
-        onProductItemClicked = {},
-        onCategoryClicked = {},
+        onTopicItemClicked= {},
         onSettingClicked = {},
-        onProfileClicked = {}
     )
 }
