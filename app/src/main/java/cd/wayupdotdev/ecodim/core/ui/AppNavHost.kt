@@ -65,7 +65,7 @@ fun AppNavHost(
 
         composable(route = Destination.AboutScreen.route) {
             AboutScreen (
-                onBackBtnClicked = { navController.navigateUp() }
+                drawerState = drawerState,
             )
         }
 
