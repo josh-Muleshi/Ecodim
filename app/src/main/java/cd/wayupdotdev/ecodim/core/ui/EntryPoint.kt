@@ -109,4 +109,6 @@ fun ComponentActivity.installUi() {
 private fun shouldShowBottomNavigation(destination: NavDestination?): Boolean {
     return !destination.isCurrent(Destination.TopicDetailScreen)
             && !destination.isCurrent(Destination.SettingsScreen)
+            && !destination.isCurrent(Destination.CommentScreen)
+            && !destination.isCurrent(Destination.SearchScreen)
 }
