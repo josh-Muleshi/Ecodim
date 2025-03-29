@@ -79,7 +79,7 @@ fun AppNavHost(
 
         composable(route = Destination.FavoriteScreen.route) {
             FavoriteScreen (
-                onBackBtnClicked = { navController.navigateUp() }
+                drawerState = drawerState,
             )
         }
     }

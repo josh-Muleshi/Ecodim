@@ -22,7 +22,7 @@ fun BottomNavigationBar(navController: NavHostController, destination: NavDestin
                 if (!destination.isCurrent(Destination.HomeScreen)) {
                     navController.navigate(Destination.HomeScreen) {
                         popUpTo(Destination.HomeScreen.route) {
-                            saveState = true
+                            saveState = false
                         }
                         launchSingleTop = true
                         restoreState = true
