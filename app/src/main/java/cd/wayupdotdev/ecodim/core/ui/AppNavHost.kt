@@ -11,6 +11,7 @@ import cd.wayupdotdev.ecodim.features.about.AboutScreen
 import cd.wayupdotdev.ecodim.features.comments.CommentScreen
 import cd.wayupdotdev.ecodim.features.favorite.FavoriteScreen
 import cd.wayupdotdev.ecodim.features.home.HomeScreen
+import cd.wayupdotdev.ecodim.features.search.SearchScreen
 import cd.wayupdotdev.ecodim.features.setting.SettingScreen
 import cd.wayupdotdev.ecodim.features.topicDetail.TopicDetailScreen
 
@@ -30,7 +31,7 @@ fun AppNavHost(
         composable(route = Destination.HomeScreen.route) {
             HomeScreen (
                 drawerState = drawerState,
-                onSearchBtnClicked = {},
+                onSearchBtnClicked = { navController.navigate(Destination.SearchScreen.route) },
                 onTopicItemClicked = { topicUid ->
                     navController.navigate(
                         Destination.TopicDetailScreen.createRoute(
@@ -80,6 +81,12 @@ fun AppNavHost(
         composable(route = Destination.FavoriteScreen.route) {
             FavoriteScreen (
                 drawerState = drawerState,
+            )
+        }
+
+        composable(route = Destination.SearchScreen.route) {
+            SearchScreen (
+                onBackBtnClicked = { navController.navigateUp()  },
             )
         }
     }

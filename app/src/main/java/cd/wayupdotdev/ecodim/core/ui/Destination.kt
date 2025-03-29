@@ -16,6 +16,7 @@ sealed class Destination(val route: String) {
     data object AboutScreen : Destination("about")
     data object CommentScreen : Destination("comment")
     data object FavoriteScreen : Destination("favorite")
+    data object SearchScreen : Destination("search")
 }
 
 fun NavDestination?.isCurrent(destination: Destination): Boolean {

@@ -59,9 +59,9 @@ fun ComponentActivity.installUi() {
                             onMenuItemClick = { menuItem ->
                                 when (menuItem) {
                                     "Accueil" -> navController.navigate(Destination.HomeScreen.route)
-                                    "Communautés" -> println("Recherche lancée")
+                                    "Communautés" -> navController.navigate(Destination.CommentScreen.route)
                                     "Favoris" -> navController.navigate(Destination.FavoriteScreen.route)
-                                    "Recherche" -> println("Recherche lancée")
+                                    "Recherche" -> navController.navigate(Destination.SearchScreen.route)
                                     "Paramètres" -> navController.navigate(Destination.SettingsScreen.route)
                                     "Aide & Support" -> println("Navigation vers Aide & Support")
                                 }
