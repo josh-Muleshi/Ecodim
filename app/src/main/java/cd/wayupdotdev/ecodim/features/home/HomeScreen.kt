@@ -14,16 +14,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Search
@@ -41,6 +41,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +55,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cd.wayupdotdev.ecodim.R
+import cd.wayupdotdev.ecodim.core.data.model.Lesson
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,9 +68,9 @@ fun HomeScreen(
     onSearchBtnClicked: () -> Unit,
     onTopicItemClicked: (String) -> Unit,
     onSettingClicked: () -> Unit,
-   // viewModel: HomeViewModel = koinViewModel()
+    viewModel: HomeViewModel = koinViewModel()
 ) {
-    //val homeUiState by viewModel.homeUiState.collectAsState()
+    val homeUiState by viewModel.homeUiState.collectAsState()
     val context = LocalContext.current
 
     BackHandler {
@@ -170,65 +174,18 @@ fun HomeScreen(
                     .background(color = MaterialTheme.colorScheme.surface)
             ) {
 
-                Card(
+                LazyColumn (
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
-                    border = BorderStroke(0.5.dp, color = MaterialTheme.colorScheme.outline),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                        .padding(vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Column (
-                        modifier = Modifier
-                            .clickable { onTopicItemClicked("") }
-                            .padding(24.dp)
-                    ){
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.Top
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = "Une chaussure unique",
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    fontWeight = FontWeight.Bold
-                                )
-
-                                Text(
-                                    text = "Nike Air Max 270",
-                                    modifier = Modifier.padding(top = 8.dp),
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                            }
-
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                                contentDescription = "Nike Dunk",
-                                modifier = Modifier
-                                    .size(150.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = "Voir plus",
-                                style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                                contentDescription = "Flèche",
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(16.dp)
-                            )
+                    if (homeUiState is HomeUiState.Success) {
+                        val lessons = (homeUiState as HomeUiState.Success).lessons
+                        items(lessons) { lesson ->
+                            TopicCard(lesson = lesson, onTopicItemClicked = {
+                                onTopicItemClicked(lesson.uid)
+                            })
                         }
                     }
                 }
@@ -238,40 +195,23 @@ fun HomeScreen(
 }
 
 @Composable
-fun ProductCard(onProductItemClicked: () -> Unit) {
+fun TopicCard(lesson: Lesson, onTopicItemClicked: () -> Unit) {
     Card(
         modifier = Modifier
-            .width(130.dp)
-            .height(200.dp),
-        shape = RoundedCornerShape(12.dp),
+            .fillMaxWidth()
+            .clickable { onTopicItemClicked() }
+            .padding(16.dp),
+        shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        border = BorderStroke(0.5.dp, color = MaterialTheme.colorScheme.outline),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable { onProductItemClicked() }
-                .padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-//            SubcomposeAsyncImage(
-//                modifier = Modifier
-//                    .size(100.dp)
-//                    .clip(RoundedCornerShape(8.dp)),
-//                model = product.imageUrl,
-//                contentDescription = null,
-//                contentScale = ContentScale.Crop
-//            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "",
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-//            Text(text = "${product.devise} ${product.price}", color = Color.Gray)
-        }
+        Text(
+            text = lesson.content,
+            fontWeight = FontWeight.Bold,
+            maxLines = 3,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
