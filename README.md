@@ -1,6 +1,6 @@
-# Ecodim (Android)
+# Ecodim
 
-Ecodim is a mobile application built with modern Android technologies to fetch and display lessons stored on Firebase. Users can mark lessons as favorites (stored locally using Room DB) and submit comments via anonymous authentication with Firebase Auth.
+Ecodim is a mobile application built to fetch and display lessons stored on Firebase. Users can mark lessons as favorites (stored locally using Room DB) and submit comments via anonymous authentication with Firebase Auth.
 
 ## Features
 
@@ -12,44 +12,35 @@ Ecodim is a mobile application built with modern Android technologies to fetch a
 
 ## Technologies Used
 
-### Programming Language
-- **Kotlin:** The official language for Android development, providing a modern and expressive syntax.
+### Programming Language & Tools
+- **Kotlin:** Modern language for Android development.
+- **Gradle Kotlin DSL:** Type-safe build configuration.
 
-### UI Framework
-- **Jetpack Compose:** A modern toolkit for building native Android UI with declarative components and powerful state handling.
+### UI
+- **Jetpack Compose:** Declarative UI framework.
+- **Material3:** Google's Material Design 3 for consistent and beautiful UI.
+- **New SplashScreen API:** Smooth launch experience.
 
-### Architecture
-- **MVVM (Model-View-ViewModel):** Separation of concerns for better maintainability and testability.
+### Architecture & State Management
+- **MVVM (Model-View-ViewModel):** Clear separation of concerns for better maintainability.
+- **ViewModel:** Retaining UI data across configuration changes.
+- **Flow & Coroutines:** Asynchronous programming with structured concurrency.
 
-### Dependency Injection
-- **Koin:** A lightweight dependency injection framework that simplifies application setup and dependency management.
+### Data Storage
+- **Room DB:** Local database for storing favorites, allowing offline access.
+- **Firebase Firestore:** Cloud storage for lessons.
 
-### Markdown Support
-- **Markdown:** Lessons are written and displayed using Markdown formatting for better readability and styling.
+### Authentication
+- **Firebase Auth:** Anonymous login to allow users to submit comments.
 
 ### Navigation
-- **Jetpack Navigation:** Handling in-app navigation with a single-activity architecture.
-
-### Splash Screen
-- **New SplashScreen API:** Provides a smooth and consistent launch experience for the application.
-
-### Design System
-- **Material3:** Implementation of Google's Material Design 3 for enhanced UI consistency and accessibility.
-
-### Local Storage
-- **Room DB:** Storing favorite lessons locally, allowing offline access.
+- **Jetpack Navigation:** Managing in-app navigation with a single-activity architecture.
 
 ### Lifecycle Management
-- **Lifecycle:** Handling UI components lifecycle-aware, improving performance and robustness.
+- **Lifecycle:** Efficient handling of UI components' lifecycle.
 
-### Asynchronous Programming
-- **Flow & Coroutines:** Managing asynchronous data streams and operations in a structured, Kotlin-friendly manner.
-
-### ViewModel
-- **ViewModel:** Retaining UI-related data across configuration changes.
-
-### Build System
-- **Gradle Kotlin DSL:** Using Kotlin for build scripts, providing type-safety and better IDE support.
+### Dependency Injection
+- **Koin:** Simple and lightweight dependency injection framework.
 
 ## Installation
 
@@ -93,4 +84,6 @@ Feel free to reach out for any questions or suggestions!
 ---
 
 Happy coding with Ecodim! 🚀
+
+
 
