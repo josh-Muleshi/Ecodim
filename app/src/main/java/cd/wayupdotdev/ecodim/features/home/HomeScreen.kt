@@ -32,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -55,10 +56,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cd.wayupdotdev.ecodim.R
 import cd.wayupdotdev.ecodim.core.data.model.Lesson
+import cd.wayupdotdev.ecodim.core.ui.AppDrawer
+import cd.wayupdotdev.ecodim.core.ui.Destination
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -130,7 +132,7 @@ fun HomeScreen(
         }
     ) { innerPadding ->
 
-        LazyColumn (
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
@@ -181,16 +183,17 @@ fun HomeScreen(
             }
         }
 
-    }
+
+}
 }
 
 @Composable
 fun TopicCard(lesson: Lesson, onTopicItemClicked: () -> Unit) {
     Card(
         modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth()
-            .clickable { onTopicItemClicked() }
-            .padding(16.dp),
+            .clickable { onTopicItemClicked() },
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
         border = BorderStroke(0.5.dp, color = MaterialTheme.colorScheme.outline),

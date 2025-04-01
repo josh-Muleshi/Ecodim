@@ -1,14 +1,13 @@
 package cd.wayupdotdev.ecodim.core.ui
 
-import androidx.activity.ComponentActivity
 import android.content.res.Configuration
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
@@ -45,11 +44,15 @@ fun ComponentActivity.installUi() {
         val navController = rememberNavController()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
+        val destination = navController
+            .currentBackStackEntryAsState().value?.destination
+
         EcodimTheme(darkTheme = isDarkTheme) {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
+                // 🔥 Envelopper Scaffold et AppNavHost avec ModalNavigationDrawer
                 ModalNavigationDrawer(
                     drawerState = drawerState,
                     drawerContent = {
@@ -70,9 +73,6 @@ fun ComponentActivity.installUi() {
                         )
                     }
                 ) {
-                    val destination = navController
-                        .currentBackStackEntryAsState().value?.destination
-
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                         bottomBar = {

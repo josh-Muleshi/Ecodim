@@ -4,88 +4,53 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+
+sealed class TopLevelRoute(val route: String, val icon: ImageVector, val name: String) {
+    data object HomeScreen : TopLevelRoute("home", Icons.Rounded.Home, "Accueil")
+    data object FavoriteScreen : TopLevelRoute("favorite", Icons.Rounded.Bookmark, "Favoris")
+    data object AboutScreen : TopLevelRoute("about", Icons.Rounded.Info, "Apropos")
+}
+
+val topLevelRoutes = listOf(
+    TopLevelRoute.HomeScreen,
+    TopLevelRoute.FavoriteScreen,
+    TopLevelRoute.AboutScreen
+)
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController, destination: NavDestination?) {
     NavigationBar {
-        NavigationBarItem(
-            selected = destination.isCurrent(Destination.HomeScreen),
-            onClick = {
-                if (!destination.isCurrent(Destination.HomeScreen)) {
-                    navController.navigate(Destination.HomeScreen) {
-                        popUpTo(Destination.HomeScreen.route) {
-                            saveState = false
+        topLevelRoutes.forEach { route ->
+            NavigationBarItem(
+                selected = destination.isCurrent(route.route),
+                onClick = {
+                    if (!destination.isCurrent(route.route)) {
+                        navController.navigate(route.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
                     }
-                }
-            },
-            label = {
-                Text(text = "Accueil")
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Rounded.Home,
-                    contentDescription = null
-                )
-            }
-        )
-
-        NavigationBarItem(
-            selected = destination.isCurrent(Destination.FavoriteScreen),
-            onClick = {
-                if (!destination.isCurrent(Destination.FavoriteScreen)) {
-                    navController.navigate(Destination.FavoriteScreen) {
-                        popUpTo(Destination.HomeScreen.route) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                }
-            },
-            label = {
-                Text(text = "Favoris")
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Rounded.Bookmark,
-                    contentDescription = null
-                )
-            }
-        )
-
-        NavigationBarItem(
-            selected = destination.isCurrent(Destination.AboutScreen),
-            onClick = {
-                if (!destination.isCurrent(Destination.AboutScreen)) {
-                    navController.navigate(Destination.AboutScreen) {
-                        popUpTo(Destination.HomeScreen.route) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                }
-            },
-            label = {
-                Text(text = "Apropos")
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Rounded.Info,
-                    contentDescription = null
-                )
-            }
-        )
+                },
+                label = { Text(text = route.name) },
+                icon = { Icon(imageVector = route.icon, contentDescription = route.name) }
+            )
+        }
     }
+}
+
+fun NavDestination?.isCurrent(route: String): Boolean {
+    return this?.hierarchy?.any { it.route == route } == true
 }
