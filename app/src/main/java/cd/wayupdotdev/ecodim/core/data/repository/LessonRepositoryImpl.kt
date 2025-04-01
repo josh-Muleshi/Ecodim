@@ -43,7 +43,6 @@ class LessonRepositoryImpl(
                 else -> close(IllegalArgumentException("Document is null"))
             }
         }
-
         awaitClose { listener.remove() }
     }.catch { throwable ->
         throw throwable

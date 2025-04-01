@@ -45,7 +45,9 @@ fun AppNavHost(
         ) { backStackEntry ->
             val topicUid = backStackEntry.arguments?.getString("topicUid") ?: ""
             TopicDetailScreen(
-                onBackClick = navController::navigateUp
+                topicUid = topicUid,
+                onBackBtnClicked = { navController.navigateUp() },
+                onFavoriteBtnClicked = {}
             )
         }
 
