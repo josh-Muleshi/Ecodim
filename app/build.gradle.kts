@@ -112,4 +112,5 @@ dependencies {
 
 //    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
+    implementation ("com.github.jeziellago:compose-markdown:0.5.7")
 }

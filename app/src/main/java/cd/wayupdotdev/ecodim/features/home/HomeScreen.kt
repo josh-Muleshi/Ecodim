@@ -46,12 +46,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cd.wayupdotdev.ecodim.R
 import cd.wayupdotdev.ecodim.core.data.model.Lesson
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -192,11 +196,16 @@ fun TopicCard(lesson: Lesson, onTopicItemClicked: () -> Unit) {
         border = BorderStroke(0.5.dp, color = MaterialTheme.colorScheme.outline),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Text(
-            text = lesson.content,
-            fontWeight = FontWeight.Bold,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis
+        MarkdownText(
+            modifier = Modifier.padding(8.dp),
+            markdown = lesson.content,
+            maxLines = 10,
+            style = TextStyle(
+                color = Color.Blue,
+                fontSize = 12.sp,
+                lineHeight = 10.sp,
+                textAlign = TextAlign.Justify,
+            ),
         )
     }
 }
