@@ -4,11 +4,8 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import androidx.navigation.navDeepLink
 import cd.wayupdotdev.ecodim.features.about.AboutScreen
 import cd.wayupdotdev.ecodim.features.comments.CommentScreen
 import cd.wayupdotdev.ecodim.features.favorite.FavoriteScreen
@@ -35,14 +32,16 @@ fun AppNavHost(
                 drawerState = drawerState,
                 onSearchBtnClicked = { navController.navigate(Destination.SearchScreen.route) },
                 onTopicItemClicked = { topicUid ->
-                    navController.navigate("topic-detail/{$topicUid}")
+                    navController.navigate(Destination.TopicDetailScreen.createRoute(
+                        topicUid = topicUid
+                    ))
                 },
                 onSettingClicked = { navController.navigate(Destination.SettingsScreen.route) }
             )
         }
 
         composable(
-            route = "topic-detail/{topicUid}",
+            route = Destination.TopicDetailScreen.route,
         ) { backStackEntry ->
             val topicUid = backStackEntry.arguments?.getString("topicUid") ?: ""
             TopicDetailScreen(
