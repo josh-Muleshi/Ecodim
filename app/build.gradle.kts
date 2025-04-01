@@ -109,4 +109,7 @@ dependencies {
     implementation ("io.coil-kt:coil-compose:2.2.2")
     implementation ("com.google.accompanist:accompanist-pager:0.29.0-alpha")
     implementation ("com.google.accompanist:accompanist-pager-indicators:0.29.0-alpha")
+
+//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+
 }

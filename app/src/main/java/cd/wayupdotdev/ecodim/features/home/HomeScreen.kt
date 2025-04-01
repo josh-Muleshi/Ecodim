@@ -9,7 +9,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,12 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
@@ -77,7 +73,6 @@ fun HomeScreen(
         (context as? Activity)?.finish()
     }
 
-    val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
@@ -130,67 +125,58 @@ fun HomeScreen(
             )
         }
     ) { innerPadding ->
-        Column(
+
+        LazyColumn (
             modifier = Modifier
-                .padding(innerPadding)
-                .wrapContentHeight()
-                .verticalScroll(scrollState)
+                .fillMaxSize()
+                .padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(4.dp))
-                    .border(
-                        1.dp,
-                        MaterialTheme.colorScheme.outline,
-                        RoundedCornerShape(4.dp)
-                    )
-                    .background(MaterialTheme.colorScheme.surface)
-                    .clickable { onSearchBtnClicked() }
-                    .padding(16.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Search,
-                        contentDescription = "Search",
-                        tint = Color.Gray
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Rechercher...",
-                        color = Color.Gray,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
-
-            Column (
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = MaterialTheme.colorScheme.surface)
-            ) {
-
-                LazyColumn (
+            // Search Box
+            item {
+                Box(
                     modifier = Modifier
+                        .padding(16.dp)
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .border(
+                            1.dp,
+                            MaterialTheme.colorScheme.outline,
+                            RoundedCornerShape(4.dp)
+                        )
+                        .background(MaterialTheme.colorScheme.surface)
+                        .clickable { onSearchBtnClicked() }
+                        .padding(16.dp),
+                    contentAlignment = Alignment.CenterStart
                 ) {
-                    if (homeUiState is HomeUiState.Success) {
-                        val lessons = (homeUiState as HomeUiState.Success).lessons
-                        items(lessons) { lesson ->
-                            TopicCard(lesson = lesson, onTopicItemClicked = {
-                                onTopicItemClicked(lesson.uid)
-                            })
-                        }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Search,
+                            contentDescription = "Search",
+                            tint = Color.Gray
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Rechercher...",
+                            color = Color.Gray,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                     }
                 }
             }
+
+            if (homeUiState is HomeUiState.Success) {
+                val lessons = (homeUiState as HomeUiState.Success).lessons
+                items(lessons) { lesson ->
+                    TopicCard(lesson = lesson, onTopicItemClicked = {
+                        onTopicItemClicked(lesson.uid)
+                    })
+                }
+            }
         }
+
     }
 }
 

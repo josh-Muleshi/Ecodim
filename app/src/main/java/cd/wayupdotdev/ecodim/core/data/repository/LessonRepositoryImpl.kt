@@ -26,8 +26,8 @@ class LessonRepositoryImpl(
                     return@addSnapshotListener
                 }
 
-                val products = value?.toObjects(Lesson::class.java).orEmpty()
-                trySend(products).isSuccess
+                val lessons = value?.toObjects(Lesson::class.java).orEmpty()
+                trySend(lessons).isSuccess
             }
 
         awaitClose { listener.remove() }

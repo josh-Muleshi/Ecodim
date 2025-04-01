@@ -39,3 +39,4 @@ fun NavController.navigate(
         navigate(destination.route)
     }
 }
+

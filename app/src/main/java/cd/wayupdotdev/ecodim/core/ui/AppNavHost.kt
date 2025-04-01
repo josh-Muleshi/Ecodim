@@ -4,8 +4,10 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import cd.wayupdotdev.ecodim.features.about.AboutScreen
 import cd.wayupdotdev.ecodim.features.comments.CommentScreen
@@ -33,26 +35,21 @@ fun AppNavHost(
                 drawerState = drawerState,
                 onSearchBtnClicked = { navController.navigate(Destination.SearchScreen.route) },
                 onTopicItemClicked = { topicUid ->
-                    navController.navigate(
-                        Destination.TopicDetailScreen.createRoute(
-                            topicUid = topicUid
-                        )
-                    )
+                    navController.navigate("topic-detail/{$topicUid}")
                 },
                 onSettingClicked = { navController.navigate(Destination.SettingsScreen.route) }
             )
         }
 
         composable(
-            route = Destination.TopicDetailScreen.route,
-            deepLinks = listOf(navDeepLink {
-                uriPattern = "https://ecodim.app/topic/{topicUid}"
-            })
-        ) {
+            route = "topic-detail/{topicUid}",
+        ) { backStackEntry ->
+            val topicUid = backStackEntry.arguments?.getString("topicUid") ?: ""
             TopicDetailScreen(
                 onBackClick = navController::navigateUp
             )
         }
+
 
         composable(route = Destination.SettingsScreen.route) {
             SettingScreen (
