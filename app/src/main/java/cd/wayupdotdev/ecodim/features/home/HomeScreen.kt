@@ -203,6 +203,7 @@ fun TopicCard(lesson: Lesson, onTopicItemClicked: () -> Unit) {
             modifier = Modifier.padding(8.dp),
             markdown = lesson.content,
             maxLines = 10,
+            fontResource = R.font.montserrat_medium,
             style = TextStyle(
                 color = Color.Blue,
                 fontSize = 12.sp,

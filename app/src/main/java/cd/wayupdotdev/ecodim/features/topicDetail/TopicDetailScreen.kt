@@ -28,6 +28,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cd.wayupdotdev.ecodim.R
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import org.koin.androidx.compose.koinViewModel
 
@@ -100,10 +101,11 @@ fun TopicDetailScreen(
                 MarkdownText(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     markdown = lesson.content,
+                    fontResource = R.font.montserrat_medium,
                     style = TextStyle(
                         color = Color.Blue,
-                        fontSize = 12.sp,
-                        lineHeight = 10.sp,
+                        fontSize = 14.sp,
+                        lineHeight = 16.sp,
                         textAlign = TextAlign.Justify,
                     ),
                 )
