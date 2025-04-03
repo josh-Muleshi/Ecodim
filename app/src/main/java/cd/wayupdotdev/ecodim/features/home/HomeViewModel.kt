@@ -2,6 +2,7 @@ package cd.wayupdotdev.ecodim.features.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cd.wayupdotdev.ecodim.core.data.model.Lesson
 import cd.wayupdotdev.ecodim.core.domain.repository.LessonRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,6 +15,9 @@ class HomeViewModel(
 
     private val _homeUiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val homeUiState: StateFlow<HomeUiState> = _homeUiState
+
+    val lessons: List<Lesson>
+        get() = (homeUiState.value as? HomeUiState.Success)?.lessons ?: emptyList()
 
     init {
         viewModelScope.launch {

@@ -2,7 +2,6 @@ package cd.wayupdotdev.ecodim.features.home
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,8 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,7 +29,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -47,18 +43,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cd.wayupdotdev.ecodim.R
-import cd.wayupdotdev.ecodim.core.data.model.Lesson
-import cd.wayupdotdev.ecodim.core.ui.AppDrawer
-import cd.wayupdotdev.ecodim.core.ui.Destination
-import dev.jeziellago.compose.markdowntext.MarkdownText
+import cd.wayupdotdev.ecodim.features.common.TopicCard
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -70,7 +58,7 @@ fun HomeScreen(
     onSearchBtnClicked: () -> Unit,
     onTopicItemClicked: (String) -> Unit,
     onSettingClicked: () -> Unit,
-    viewModel: HomeViewModel = koinViewModel()
+    viewModel: HomeViewModel
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
     val context = LocalContext.current
@@ -175,6 +163,7 @@ fun HomeScreen(
 
             if (homeUiState is HomeUiState.Success) {
                 val lessons = (homeUiState as HomeUiState.Success).lessons
+
                 items(lessons) { lesson ->
                     TopicCard(lesson = lesson, onTopicItemClicked = {
                         onTopicItemClicked(lesson.uid)
@@ -182,35 +171,6 @@ fun HomeScreen(
                 }
             }
         }
-
-
-}
-}
-
-@Composable
-fun TopicCard(lesson: Lesson, onTopicItemClicked: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .fillMaxWidth()
-            .clickable { onTopicItemClicked() },
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
-        border = BorderStroke(0.5.dp, color = MaterialTheme.colorScheme.outline),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        MarkdownText(
-            modifier = Modifier.padding(8.dp),
-            markdown = lesson.content,
-            maxLines = 10,
-            fontResource = R.font.montserrat_medium,
-            style = TextStyle(
-                color = Color.Blue,
-                fontSize = 12.sp,
-                lineHeight = 10.sp,
-                textAlign = TextAlign.Justify,
-            ),
-        )
     }
 }
 
@@ -222,5 +182,6 @@ private fun HomePrev() {
         onSearchBtnClicked = {},
         onTopicItemClicked= {},
         onSettingClicked = {},
+        viewModel = koinViewModel()
     )
 }
