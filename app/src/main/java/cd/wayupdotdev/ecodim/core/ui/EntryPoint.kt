@@ -52,12 +52,10 @@ fun ComponentActivity.installUi() {
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                // 🔥 Envelopper Scaffold et AppNavHost avec ModalNavigationDrawer
                 ModalNavigationDrawer(
                     drawerState = drawerState,
                     drawerContent = {
                         AppDrawer(
-                            drawerState = drawerState,
                             onCloseDrawer = { coroutineScope.launch { drawerState.close() } },
                             onMenuItemClick = { menuItem ->
                                 when (menuItem) {
