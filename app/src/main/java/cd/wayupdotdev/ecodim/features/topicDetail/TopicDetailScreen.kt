@@ -51,9 +51,14 @@ fun TopicDetailScreen(
     val offsetY = remember { mutableFloatStateOf(0f) }
 
     val state = rememberTransformableState { zoomChange, offsetChange, _ ->
-        scale.value *= zoomChange
-        offsetX.value += offsetChange.x
-        offsetY.value += offsetChange.y
+        val newScale = (scale.floatValue * zoomChange).coerceAtLeast(1f)
+
+        val maxOffsetX = (offsetChange.x * newScale).coerceIn(-500f, 500f)  // Limiter les mouvements horizontaux
+        val maxOffsetY = (offsetChange.y * newScale).coerceIn(-500f, 500f)  // Limiter les mouvements verticaux
+
+        scale.floatValue = newScale
+        offsetX.value += maxOffsetX
+        offsetY.value += maxOffsetY
     }
 
     Scaffold(
@@ -106,4 +111,3 @@ fun TopicDetailScreen(
         }
     }
 }
-
