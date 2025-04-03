@@ -110,7 +110,9 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-pager:0.29.0-alpha")
     implementation ("com.google.accompanist:accompanist-pager-indicators:0.29.0-alpha")
 
-//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+    implementation ("com.airbnb.android:lottie-compose:6.0.0")
+
+//    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
     implementation ("com.github.jeziellago:compose-markdown:0.5.7")
 }
