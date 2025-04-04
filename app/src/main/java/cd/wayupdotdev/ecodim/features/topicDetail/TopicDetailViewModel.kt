@@ -17,10 +17,22 @@ class TopicDetailViewModel(
         _data.value = TopicDetailUiState.Loading
         try {
             lessonRepository.getLessonByUid(topicUid).collect { lesson ->
-                _data.value = lesson?.let { TopicDetailUiState.Success(it) }!!
+                lesson?.let {
+                    _data.value = TopicDetailUiState.Success(it, it.isFavorite)
+                } ?: run {
+                    _data.value = TopicDetailUiState.Error("Leçon non trouvée.")
+                }
             }
         } catch (e: Exception) {
             _data.value = TopicDetailUiState.Error(e.message.toString())
+        }
+    }
+
+    fun updateFavorite(lessonId: String, isFavorite: Boolean) = viewModelScope.launch {
+        lessonRepository.updateFavorite(lessonId, isFavorite)
+        val currentState = _data.value
+        if (currentState is TopicDetailUiState.Success) {
+            _data.value = currentState.copy(isFavorite = isFavorite)
         }
     }
 }

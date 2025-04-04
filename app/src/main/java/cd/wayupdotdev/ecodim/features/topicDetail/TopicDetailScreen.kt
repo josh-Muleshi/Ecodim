@@ -9,6 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -54,8 +55,8 @@ fun TopicDetailScreen(
     val state = rememberTransformableState { zoomChange, offsetChange, _ ->
         val newScale = (scale.floatValue * zoomChange).coerceAtLeast(1f)
 
-        val maxOffsetX = (offsetChange.x * newScale).coerceIn(-500f, 500f)  // Limiter les mouvements horizontaux
-        val maxOffsetY = (offsetChange.y * newScale).coerceIn(-500f, 500f)  // Limiter les mouvements verticaux
+        val maxOffsetX = (offsetChange.x * newScale).coerceIn(-500f, 500f)
+        val maxOffsetY = (offsetChange.y * newScale).coerceIn(-500f, 500f)
 
         scale.floatValue = newScale
         offsetX.value += maxOffsetX
@@ -73,11 +74,19 @@ fun TopicDetailScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = onFavoriteBtnClicked) {
-                        Icon(
-                            imageVector = Icons.Outlined.FavoriteBorder,
-                            contentDescription = "Ajouter au panier"
-                        )
+                    if (data is TopicDetailUiState.Success) {
+                        val lesson = (data as TopicDetailUiState.Success).lesson
+                        val isFavorite = (data as TopicDetailUiState.Success).isFavorite
+
+                        IconButton(onClick = {
+                            viewModel.updateFavorite(lesson.id, !isFavorite)
+                        }) {
+                            Icon(
+                                imageVector = if (isFavorite) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder,
+                                tint = if (isFavorite) Color.Red else Color.Gray,
+                                contentDescription = if (isFavorite) "Retirer des favoris" else "Ajouter aux favoris"
+                            )
+                        }
                     }
                 }
             )
