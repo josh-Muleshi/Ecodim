@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cd.wayupdotdev.ecodim.R
-import cd.wayupdotdev.ecodim.core.data.model.Lesson
+import cd.wayupdotdev.ecodim.core.data.remote.model.Lesson
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable

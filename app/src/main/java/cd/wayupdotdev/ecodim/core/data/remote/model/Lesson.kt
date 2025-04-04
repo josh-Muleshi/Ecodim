@@ -1,4 +1,4 @@
-package cd.wayupdotdev.ecodim.core.data.model
+package cd.wayupdotdev.ecodim.core.data.remote.model
 
 import java.util.Date
 
