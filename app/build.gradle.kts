@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.services)
+    alias(libs.plugins.ksp)
 
     id ("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
@@ -42,6 +43,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     packaging {
         resources {
@@ -105,6 +107,10 @@ dependencies {
 
     implementation (libs.kotlinx.coroutines.play.services)
     implementation (libs.androidx.core.splashscreen)
+
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
 
     implementation ("io.coil-kt:coil-compose:2.2.2")
     implementation ("com.google.accompanist:accompanist-pager:0.29.0-alpha")
