@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cd.wayupdotdev.ecodim.core.data.model.Lesson
+import cd.wayupdotdev.ecodim.core.data.remote.model.Lesson
 import cd.wayupdotdev.ecodim.features.common.TopicCard
 
 @OptIn(ExperimentalMaterial3Api::class)
