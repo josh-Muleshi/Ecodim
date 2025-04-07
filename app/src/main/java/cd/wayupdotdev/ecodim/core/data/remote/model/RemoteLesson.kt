@@ -9,15 +9,20 @@ data class RemoteLesson(
     var uid: String = "",
     var userId: String = "",
     var content: String = "",
-    var createdAt: Date? = null
+    var createdAt: Date = Date(),
+    var updatedAt: Date = createdAt
 )
 
-fun RemoteLesson.toDomain(): Lesson? = createdAt?.let {
-    Lesson(
+fun RemoteLesson.toDomain(): Lesson {
+    return Lesson(
         uid = uid,
         userId = userId,
         content = content,
-        createdAt = it
+        createdAt = createdAt,
+        updatedAt = updatedAt
     )
 }
+
+
+
 

@@ -7,4 +7,5 @@ data class Lesson(
     val userId: String,
     val content: String,
     val createdAt: Date,
+    val updatedAt: Date
 )

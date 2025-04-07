@@ -3,6 +3,7 @@ package cd.wayupdotdev.ecodim.core.data.repository
 import cd.wayupdotdev.ecodim.core.data.local.dao.LessonDao
 import cd.wayupdotdev.ecodim.core.data.local.entity.LessonEntity
 import cd.wayupdotdev.ecodim.core.data.local.entity.toDomain
+import cd.wayupdotdev.ecodim.core.data.local.entity.toEntity
 import cd.wayupdotdev.ecodim.core.data.remote.model.RemoteLesson
 import cd.wayupdotdev.ecodim.core.data.remote.model.toDomain
 import cd.wayupdotdev.ecodim.core.domain.model.Lesson
@@ -52,22 +53,13 @@ class LessonRepositoryImpl(
 
     private suspend fun updateLocalDatabase(lessons: List<Lesson>) {
         val updatedEntities = lessons.mapNotNull { lesson ->
-            lesson.createdAt?.let { createdAt ->
-                val localEntity = lessonDao.getLessonByUid(lesson.uid).firstOrNull()
+            val localEntity = lessonDao.getLessonByUid(lesson.uid).firstOrNull()
 
-                // Ne rien faire si la version distante n’est pas plus récente
-                if (localEntity != null && localEntity.updatedAt >= createdAt.time) {
-                    return@let null
-                }
-
-                LessonEntity(
-                    id = lesson.uid,
-                    userId = lesson.userId,
-                    content = lesson.content,
-                    updatedAt = createdAt.time,
-                    isFavorite = localEntity?.isFavorite ?: false // Garde la valeur locale
-                )
+            if (localEntity != null && localEntity.updatedAt >= lesson.updatedAt.time) {
+                return@mapNotNull null
             }
+
+            lesson.toEntity(isFavorite = localEntity?.isFavorite ?: false)
         }
 
         if (updatedEntities.isNotEmpty()) {
