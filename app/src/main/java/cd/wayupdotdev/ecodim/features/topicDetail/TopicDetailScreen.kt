@@ -1,5 +1,6 @@
 package cd.wayupdotdev.ecodim.features.topicDetail
 
+import android.util.Log
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Box
@@ -80,6 +81,7 @@ fun TopicDetailScreen(
 
                         IconButton(onClick = {
                             viewModel.updateFavorite(lesson.id, !isFavorite)
+                            Log.w("favorisAdd", "${ isFavorite }")
                         }) {
                             Icon(
                                 imageVector = if (isFavorite) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder,

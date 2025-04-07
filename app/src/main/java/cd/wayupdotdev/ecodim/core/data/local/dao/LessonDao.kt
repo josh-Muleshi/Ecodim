@@ -21,4 +21,7 @@ interface LessonDao {
 
     @Query("UPDATE lessons SET isFavorite = :isFavorite WHERE id = :lessonId")
     suspend fun updateFavorite(lessonId: String, isFavorite: Boolean)
+
+    @Update
+    suspend fun updateFavorite(lesson: LessonEntity)
 }

@@ -1,5 +1,6 @@
 package cd.wayupdotdev.ecodim.features.topicDetail
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cd.wayupdotdev.ecodim.core.domain.repository.LessonRepository
@@ -30,6 +31,7 @@ class TopicDetailViewModel(
 
     fun updateFavorite(lessonId: String, isFavorite: Boolean) = viewModelScope.launch {
         lessonRepository.updateFavorite(lessonId, isFavorite)
+        Log.w("favorisView", "${ lessonId } ${ isFavorite }")
         val currentState = _data.value
         if (currentState is TopicDetailUiState.Success) {
             _data.value = currentState.copy(isFavorite = isFavorite)
