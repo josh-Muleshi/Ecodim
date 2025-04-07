@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -75,6 +76,13 @@ fun FavoriteScreen(
                                         }
                                     }
                                 },
+                                colors = TextFieldDefaults.colors(
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    cursorColor = MaterialTheme.colorScheme.onSurface,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                ),
                                 modifier = Modifier.fillMaxWidth()
                             )
                         } else {
@@ -112,16 +120,6 @@ fun FavoriteScreen(
         }
     ) { innerPadding ->
         when (uiState) {
-            is FavoriteUiState.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
             is FavoriteUiState.Success -> {
                 val lessons = (uiState as FavoriteUiState.Success).lessons
                 val filteredLessons = lessons.filter { it.content.contains(searchQuery, ignoreCase = true) }
@@ -132,24 +130,31 @@ fun FavoriteScreen(
                         .padding(innerPadding)
                 ) {
                     if (filteredLessons.isEmpty()) {
-                        Text(
-                            text = "Aucun favori trouvé.",
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(text = "Aucun favori trouvé.")
+                        }
                     } else {
                         LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(innerPadding),
+                            modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            items(lessons) { lesson ->
+                            items(filteredLessons) { lesson ->
                                 TopicCard(lesson = lesson, onTopicItemClicked = {
                                     onTopicItemClicked(lesson.uid)
                                 })
                             }
                         }
                     }
+                }
+            }
+            is FavoriteUiState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
                 }
             }
             is FavoriteUiState.Error -> {
