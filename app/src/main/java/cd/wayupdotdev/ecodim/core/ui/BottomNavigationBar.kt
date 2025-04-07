@@ -1,6 +1,9 @@
 package cd.wayupdotdev.ecodim.core.ui
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Info
@@ -34,7 +37,7 @@ fun BottomNavigationBar(navController: NavHostController, destination: NavDestin
             NavigationBarItem(
                 selected = destination.isCurrent(route.route),
                 onClick = {
-                    if (!destination.isCurrent(route.route)) {
+                    if (destination?.route != route.route) {
                         navController.navigate(route.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
                                 saveState = true
@@ -45,7 +48,18 @@ fun BottomNavigationBar(navController: NavHostController, destination: NavDestin
                     }
                 },
                 label = { Text(text = route.name) },
-                icon = { Icon(imageVector = route.icon, contentDescription = route.name) }
+                icon = {
+                    val icon = if (destination.isCurrent(route.route)) {
+                        route.icon
+                    } else {
+                        when (route) {
+                            is TopLevelRoute.HomeScreen -> Icons.Outlined.Home
+                            is TopLevelRoute.FavoriteScreen -> Icons.Outlined.BookmarkBorder
+                            is TopLevelRoute.AboutScreen -> Icons.Outlined.Info
+                        }
+                    }
+                    Icon(imageVector = icon, contentDescription = route.name)
+                }
             )
         }
     }
