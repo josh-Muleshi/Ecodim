@@ -12,8 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.outlined.DarkMode
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SettingScreen(
     modifier: Modifier = Modifier,
-    onAboutBtnClicked: () -> Unit,
+    onHelpBtnClicked: () -> Unit,
     onSecurityBtnClicked: () -> Unit,
     onBackBtnClicked: () -> Unit,
     darkMode: Boolean,
@@ -43,7 +43,7 @@ fun SettingScreen(
 ) {
 
     val settingItems = listOf(
-        Triple("À propos", Icons.Outlined.Info, onAboutBtnClicked),
+        Triple("Aide & Support", Icons.AutoMirrored.Outlined.HelpOutline, onHelpBtnClicked),
         Triple("Confidentialité et Sécurité", Icons.Outlined.Lock, onSecurityBtnClicked)
     )
 
@@ -137,7 +137,7 @@ fun SettingItem(
 private fun SettingPrev() {
     SettingScreen(
         onBackBtnClicked = {},
-        onAboutBtnClicked = {},
+        onHelpBtnClicked = {},
         onSecurityBtnClicked = {},
         darkMode = true,
         onDarkModeChange = {}
