@@ -2,7 +2,10 @@ package cd.wayupdotdev.ecodim.core.data.repository
 
 import cd.wayupdotdev.ecodim.core.data.local.dao.LessonDao
 import cd.wayupdotdev.ecodim.core.data.local.entity.LessonEntity
-import cd.wayupdotdev.ecodim.core.data.remote.model.Lesson
+import cd.wayupdotdev.ecodim.core.data.local.entity.toDomain
+import cd.wayupdotdev.ecodim.core.data.remote.model.RemoteLesson
+import cd.wayupdotdev.ecodim.core.data.remote.model.toDomain
+import cd.wayupdotdev.ecodim.core.domain.model.Lesson
 import cd.wayupdotdev.ecodim.core.domain.repository.LessonRepository
 import cd.wayupdotdev.ecodim.core.utils.FireBaseConstants
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,6 +17,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class LessonRepositoryImpl(
@@ -21,18 +25,19 @@ class LessonRepositoryImpl(
     private val lessonDao: LessonDao
 ) : LessonRepository {
 
-    override fun getAll(): Flow<List<Lesson>> = lessonDao.getAllLessons()
+    override fun getAll(): Flow<List<Lesson>?> = lessonDao.getAllLessons()
         .flatMapLatest {
             callbackFlow {
                 val listener = firestore.collection(FireBaseConstants.lesson)
-                    .orderBy(Lesson::createdAt.name, Query.Direction.DESCENDING)
+                    .orderBy(RemoteLesson::createdAt.name, Query.Direction.DESCENDING)
                     .addSnapshotListener { value, error ->
                         if (error != null) {
                             close(error)
                             return@addSnapshotListener
                         }
 
-                        val lessons = value?.toObjects(Lesson::class.java).orEmpty()
+                        val remoteLessons = value?.toObjects(RemoteLesson::class.java).orEmpty()
+                        val lessons = remoteLessons.mapNotNull { it.toDomain() }
 
                         launch(Dispatchers.IO) {
                             updateLocalDatabase(lessons)
@@ -63,7 +68,7 @@ class LessonRepositoryImpl(
                     isFavorite = localEntity?.isFavorite ?: false // Garde la valeur locale
                 )
             }
-        }.filterNotNull()
+        }
 
         if (updatedEntities.isNotEmpty()) {
             lessonDao.insertLessons(updatedEntities)
@@ -73,8 +78,10 @@ class LessonRepositoryImpl(
     override fun getLessonByUid(uidLesson: String): Flow<LessonEntity?> =
         lessonDao.getLessonByUid(uidLesson)
 
-    override fun getFavoriteLessons(): Flow<List<LessonEntity>> =
-        lessonDao.getFavoriteLessons()
+    override fun getFavoriteLessons(): Flow<List<Lesson>> =
+        lessonDao.getFavoriteLessons().map { list ->
+            list.map { it.toDomain() }
+        }
 
     override suspend fun updateFavorite(lessonId: String, isFavorite: Boolean) {
         lessonDao.updateFavorite(lessonId, isFavorite)

@@ -40,7 +40,6 @@ fun TopicDetailScreen(
     topicUid: String,
     modifier: Modifier = Modifier,
     onBackBtnClicked: () -> Unit,
-    onFavoriteBtnClicked: () -> Unit,
     viewModel: TopicDetailViewModel = koinViewModel()
 ) {
     val data by viewModel.data.collectAsState()

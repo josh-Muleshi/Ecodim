@@ -2,7 +2,6 @@ package cd.wayupdotdev.ecodim.features.home
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -48,10 +47,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cd.wayupdotdev.ecodim.R
 import cd.wayupdotdev.ecodim.features.common.TopicCard
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 

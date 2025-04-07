@@ -50,8 +50,7 @@ fun AppNavHost(
             val topicUid = backStackEntry.arguments?.getString("topicUid") ?: ""
             TopicDetailScreen(
                 topicUid = topicUid,
-                onBackBtnClicked = { navController.navigateUp() },
-                onFavoriteBtnClicked = {}
+                onBackBtnClicked = { navController.navigateUp() }
             )
         }
 
@@ -83,6 +82,11 @@ fun AppNavHost(
         composable(route = Destination.FavoriteScreen.route) {
             FavoriteScreen (
                 drawerState = drawerState,
+                onTopicItemClicked = { topicUid ->
+                    navController.navigate(Destination.TopicDetailScreen.createRoute(
+                        topicUid = topicUid
+                    ))
+                }
             )
         }
 

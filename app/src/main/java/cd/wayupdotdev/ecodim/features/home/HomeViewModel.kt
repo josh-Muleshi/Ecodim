@@ -2,7 +2,7 @@ package cd.wayupdotdev.ecodim.features.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cd.wayupdotdev.ecodim.core.data.remote.model.Lesson
+import cd.wayupdotdev.ecodim.core.domain.model.Lesson
 import cd.wayupdotdev.ecodim.core.domain.repository.LessonRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

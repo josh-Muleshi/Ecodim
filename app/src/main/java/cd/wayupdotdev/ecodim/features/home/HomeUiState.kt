@@ -1,6 +1,6 @@
 package cd.wayupdotdev.ecodim.features.home
 
-import cd.wayupdotdev.ecodim.core.data.remote.model.Lesson
+import cd.wayupdotdev.ecodim.core.domain.model.Lesson
 
 sealed interface HomeUiState {
     data object Loading : HomeUiState

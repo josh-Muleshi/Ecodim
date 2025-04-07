@@ -1,6 +1,5 @@
 package cd.wayupdotdev.ecodim.features.search
 
-
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,7 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cd.wayupdotdev.ecodim.core.data.remote.model.Lesson
+import cd.wayupdotdev.ecodim.core.domain.model.Lesson
 import cd.wayupdotdev.ecodim.features.common.TopicCard
 
 @OptIn(ExperimentalMaterial3Api::class)
