@@ -73,9 +73,7 @@ fun AppNavHost(
 
         composable(route = Destination.CommentScreen.route) {
             CommentScreen (
-                onBackClick = { navController.navigateUp() },
-                darkMode = isDarkTheme,
-                onDarkModeChange = onDarkModeChange
+                onBackBtnClicked = { navController.navigateUp() }
             )
         }
 
