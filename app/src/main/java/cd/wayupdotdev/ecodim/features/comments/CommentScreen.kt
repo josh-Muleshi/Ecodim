@@ -122,7 +122,7 @@ fun CommentScreen(
                         .weight(1f)
                         .padding(end = 8.dp)
                         .defaultMinSize(minHeight = 48.dp),
-                    shape = RoundedCornerShape(20.dp),
+                    shape = RoundedCornerShape(50.dp),
                     colors = TextFieldDefaults.colors(
                         cursorColor = MaterialTheme.colorScheme.onSurface,
                         focusedIndicatorColor = Color.Transparent,
