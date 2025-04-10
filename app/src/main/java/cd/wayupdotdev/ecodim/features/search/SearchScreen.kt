@@ -63,6 +63,8 @@ fun SearchScreen(
                         },
                         shape = RoundedCornerShape(50.dp),
                         colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
                             cursorColor = MaterialTheme.colorScheme.onSurface,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
