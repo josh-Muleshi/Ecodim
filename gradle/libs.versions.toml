@@ -21,6 +21,7 @@ google-services = "4.4.2"
 firebaseStorageKtx = "21.0.1"
 play-services-auth = "21.3.0"
 kotlinxCoroutinesAndroid = "1.8.0"
+rendering = "1.17.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -62,6 +63,7 @@ firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
+rendering = { group = "com.google.ar.sceneform", name = "rendering", version.ref = "rendering" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -61,7 +61,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cd.wayupdotdev.ecodim.R
-import cd.wayupdotdev.ecodim.ui.theme.Primary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -155,7 +154,7 @@ fun CommentScreen(
                     shape = CircleShape,
                     contentPadding = PaddingValues(0.dp), // enlever le padding par défaut
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Primary,
+                        containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = Color.White
                     )
                 ) {
