@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LessonDao {
 
-    @Query("SELECT * FROM lessons ORDER BY updatedAt DESC")
+    @Query("SELECT * FROM lessons ORDER BY updatedAt")
     fun getAllLessons(): Flow<List<LessonEntity>>
 
     @Query("SELECT * FROM lessons WHERE isFavorite = 1 ORDER BY updatedAt DESC")
@@ -24,4 +24,8 @@ interface LessonDao {
 
     @Update
     suspend fun updateFavorite(lesson: LessonEntity)
+
+    @Query("DELETE FROM lessons WHERE id IN (:uids)")
+    suspend fun deleteLessonsByUids(uids: List<String>)
+
 }

@@ -14,11 +14,12 @@ import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class LessonRepositoryImpl(
@@ -26,34 +27,51 @@ class LessonRepositoryImpl(
     private val lessonDao: LessonDao
 ) : LessonRepository {
 
-    override fun getAll(): Flow<List<Lesson>?> = lessonDao.getAllLessons()
-        .flatMapLatest {
-            callbackFlow {
-                val listener = firestore.collection(FireBaseConstants.lesson)
-                    .orderBy(RemoteLesson::createdAt.name, Query.Direction.DESCENDING)
-                    .addSnapshotListener { value, error ->
-                        if (error != null) {
-                            close(error)
-                            return@addSnapshotListener
-                        }
+    override fun getAll(): Flow<List<Lesson>> = channelFlow {
+        // Émettre les données locales immédiatement
+        lessonDao.getAllLessons()
+            .map { it.map { entity -> entity.toDomain() } }
+            .onEach { send(it) }
+            .launchIn(this)
 
-                        val remoteLessons = value?.toObjects(RemoteLesson::class.java).orEmpty()
-                        val lessons = remoteLessons.mapNotNull { it.toDomain() }
+        // Ensuite on écoute Firestore
+        val listener = firestore.collection(FireBaseConstants.lesson)
+            .orderBy(RemoteLesson::createdAt.name, Query.Direction.DESCENDING)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
 
-                        launch(Dispatchers.IO) {
-                            updateLocalDatabase(lessons)
-                        }
+                val remoteLessons = value?.toObjects(RemoteLesson::class.java).orEmpty()
+                val lessons = remoteLessons.mapNotNull { it.toDomain() }
 
-                        trySend(lessons).isSuccess
-                    }
-
-                awaitClose { listener.remove() }
+                launch(Dispatchers.IO) {
+                    updateLocalDatabase(lessons)
+                }
             }
-        }.flowOn(Dispatchers.IO)
 
-    private suspend fun updateLocalDatabase(lessons: List<Lesson>) {
-        val updatedEntities = lessons.mapNotNull { lesson ->
-            val localEntity = lessonDao.getLessonByUid(lesson.uid).firstOrNull()
+        awaitClose {
+            listener.remove()
+        }
+    }.flowOn(Dispatchers.IO)
+
+    private suspend fun updateLocalDatabase(remoteLessons: List<Lesson>) {
+        val localLessons = lessonDao.getAllLessons().firstOrNull().orEmpty()
+
+        val remoteUids = remoteLessons.map { it.uid }.toSet()
+        val localUids = localLessons.map { it.id }
+
+        // Trouver les leçons locales qui ne sont plus dans Firestore
+        val toDeleteUids = localUids.filterNot { it in remoteUids }
+
+        if (toDeleteUids.isNotEmpty()) {
+            lessonDao.deleteLessonsByUids(toDeleteUids)
+        }
+
+        // Mise à jour des leçons existantes ou ajout de nouvelles
+        val updatedEntities = remoteLessons.mapNotNull { lesson ->
+            val localEntity = localLessons.find { it.id == lesson.uid }
 
             if (localEntity != null && localEntity.updatedAt >= lesson.updatedAt.time) {
                 return@mapNotNull null

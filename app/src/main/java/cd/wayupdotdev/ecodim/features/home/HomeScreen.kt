@@ -162,7 +162,7 @@ fun HomeScreen(
             }
 
             if (homeUiState is HomeUiState.Success) {
-                val lessons = (homeUiState as HomeUiState.Success).lessons
+                val lessons = (homeUiState as? HomeUiState.Success)?.lessons ?: emptyList()
 
                 items(lessons) { lesson ->
                     TopicCard(lesson = lesson, onTopicItemClicked = {
