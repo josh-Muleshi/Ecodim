@@ -37,9 +37,10 @@ fun BottomNavigationBar(navController: NavHostController, destination: NavDestin
             NavigationBarItem(
                 selected = destination.isCurrent(route.route),
                 onClick = {
-                    if (destination?.route != route.route) {
+                    if (!destination.isCurrent(route.route)) {
                         navController.navigate(route.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = false
                                 saveState = true
                             }
                             launchSingleTop = true
