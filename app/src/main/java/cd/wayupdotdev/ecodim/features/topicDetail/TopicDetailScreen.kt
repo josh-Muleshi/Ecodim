@@ -49,19 +49,15 @@ fun TopicDetailScreen(
     }
 
     val scale = remember { mutableFloatStateOf(1f) }
-    val offsetX = remember { mutableFloatStateOf(0f) }
-    val offsetY = remember { mutableFloatStateOf(0f) }
+    val zoomSensitivity = 1.5f
 
-    val state = rememberTransformableState { zoomChange, offsetChange, _ ->
-        val newScale = (scale.floatValue * zoomChange).coerceAtLeast(1f)
-
-        val maxOffsetX = (offsetChange.x * newScale).coerceIn(-500f, 500f)
-        val maxOffsetY = (offsetChange.y * newScale).coerceIn(-500f, 500f)
-
-        scale.floatValue = newScale
-        offsetX.value += maxOffsetX
-        offsetY.value += maxOffsetY
+    val state = rememberTransformableState { zoomChange, _, _ ->
+        val adjustedZoom = (1 + (zoomChange - 1) * zoomSensitivity)
+        scale.floatValue = (scale.floatValue * adjustedZoom).coerceAtLeast(1f)
     }
+
+    val baseFontSize = 16.sp
+    val scaledFontSize = (baseFontSize.value * scale.floatValue).sp
 
     Scaffold(
         modifier = modifier,
@@ -80,7 +76,7 @@ fun TopicDetailScreen(
 
                         IconButton(onClick = {
                             viewModel.updateFavorite(lesson.id, !isFavorite)
-                            Log.w("favorisAdd", "${ isFavorite }")
+                            Log.w("favorisAdd", "$isFavorite")
                         }) {
                             Icon(
                                 imageVector = if (isFavorite) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder,
@@ -99,23 +95,16 @@ fun TopicDetailScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .verticalScroll(rememberScrollState())
                     .transformable(state = state)
-                    .graphicsLayer(
-                        scaleX = scale.floatValue,
-                        scaleY = scale.floatValue,
-                        translationX = offsetX.floatValue,
-                        translationY = offsetY.floatValue
-                    )
             ) {
                 MarkdownText(
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp).verticalScroll(rememberScrollState()),
                     markdown = lesson.content,
                     fontResource = R.font.montserrat_medium,
                     style = TextStyle(
                         color = Color.Blue,
-                        fontSize = 14.sp,
-                        lineHeight = 16.sp,
+                        fontSize = scaledFontSize,
+                        lineHeight = (scaledFontSize.value + 2).sp,
                         textAlign = TextAlign.Justify,
                     ),
                 )
