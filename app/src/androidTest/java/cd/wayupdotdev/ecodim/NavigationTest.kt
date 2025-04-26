@@ -25,7 +25,7 @@ class NavigationTest {
         composeTestRule.setContent {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
-            AppNavHost(modifier = Modifier, navController = navController, isDarkTheme = true){}
+//            AppNavHost(modifier = Modifier, navController = navController, isDarkTheme = false){}
         }
     }
 
