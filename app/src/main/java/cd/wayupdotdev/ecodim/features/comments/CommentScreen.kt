@@ -68,6 +68,9 @@ fun CommentScreen(
 ) {
     val messages = remember { mutableStateListOf<Message>().apply { addAll(SampleData.conversationSample) } }
     var newMessage by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
+    var userName by remember { mutableStateOf("") }
+
     val listState = rememberLazyListState()
 
     LaunchedEffect(messages.size) {
@@ -84,7 +87,12 @@ fun CommentScreen(
                     }
                 },
                 actions = {
-                    UserNamePopupExample()
+                    UserNamePopupExample(
+                        showDialog = showDialog,
+                        onShowDialogChange = { showDialog = it },
+                        userName = userName,
+                        onUserNameChange = { userName = it }
+                    )
                 }
             )
         }
@@ -242,37 +250,37 @@ fun MessageCard(msg: Message) {
         }
     }
 }
-
 @Composable
-fun UserNamePopupExample() {
-    var showDialog by remember { mutableStateOf(false) }
-    var userName by remember { mutableStateOf("") }
-
-    IconButton(onClick = { showDialog = true }) {
+fun UserNamePopupExample(
+    showDialog: Boolean,
+    onShowDialogChange: (Boolean) -> Unit,
+    userName: String,
+    onUserNameChange: (String) -> Unit
+) {
+    IconButton(onClick = { onShowDialogChange(true) }) {
         Icon(imageVector = Icons.Default.Person, contentDescription = null)
     }
 
     if (showDialog) {
         AlertDialog(
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { onShowDialogChange(false) },
             title = { Text(text = "Entrez votre nom") },
             text = {
                 TextField(
                     value = userName,
-                    onValueChange = { userName = it },
+                    onValueChange = { onUserNameChange(it) },
                     placeholder = { Text("Nom d'utilisateur") }
                 )
             },
             confirmButton = {
                 TextButton(onClick = {
-                    // Ici tu peux utiliser userName
-                    showDialog = false
+                    onShowDialogChange(false)
                 }) {
                     Text("OK")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) {
+                TextButton(onClick = { onShowDialogChange(false) }) {
                     Text("Annuler")
                 }
             }
