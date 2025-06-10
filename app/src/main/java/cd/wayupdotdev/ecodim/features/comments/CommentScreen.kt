@@ -47,6 +47,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -60,27 +61,99 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cd.wayupdotdev.ecodim.R
+import cd.wayupdotdev.ecodim.core.domain.model.Comment
+import org.koin.androidx.compose.koinViewModel
+import java.util.Date
+import java.util.UUID
+
+
+//@Composable
+//fun MessageCard(msg: Message) {
+//    val isUserMe = msg.author == "Moi"
+//
+//    Row(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(horizontal = 8.dp),
+//        horizontalArrangement = if (isUserMe) Arrangement.End else Arrangement.Start
+//    ) {
+//        if (!isUserMe) {
+//            Image(
+//                painter = painterResource(R.drawable.ic_launcher_foreground),
+//                contentDescription = null,
+//                modifier = Modifier
+//                    .size(40.dp)
+//                    .clip(CircleShape)
+//                    .border(1.5.dp, MaterialTheme.colorScheme.secondary, CircleShape)
+//            )
+//            Spacer(modifier = Modifier.width(8.dp))
+//        }
+//
+//        var isExpanded by remember { mutableStateOf(false) }
+//        val surfaceColor by animateColorAsState(
+//            if (isExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+//        )
+//
+//        Column(
+//            horizontalAlignment = if (isUserMe) Alignment.End else Alignment.Start,
+//            modifier = Modifier
+//                .clickable { isExpanded = !isExpanded }
+//                .widthIn(max = 280.dp) // Limite la largeur des bulles
+//        ) {
+//            if (!isUserMe) {
+//                Text(
+//                    text = msg.author,
+//                    color = MaterialTheme.colorScheme.secondary,
+//                    style = MaterialTheme.typography.titleSmall
+//                )
+//            }
+//
+//            Spacer(modifier = Modifier.height(4.dp))
+//
+//            Surface(
+//                shape = MaterialTheme.shapes.medium,
+//                shadowElevation = 1.dp,
+//                color = if (isUserMe) MaterialTheme.colorScheme.primary else surfaceColor,
+//                modifier = Modifier.animateContentSize().padding(1.dp)
+//            ) {
+//                Text(
+//                    text = msg.body,
+//                    modifier = Modifier.padding(all = 8.dp),
+//                    color = if (isUserMe) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+//                    maxLines = if (isExpanded) Int.MAX_VALUE else 1,
+//                    style = MaterialTheme.typography.bodyMedium
+//                )
+//            }
+//        }
+//    }
+//}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentScreen(
     onBackBtnClicked: () -> Unit,
+    viewModel: CommentViewModel = koinViewModel() // Injecte via Koin
 ) {
-    val messages = remember { mutableStateListOf<Message>().apply { addAll(SampleData.conversationSample) } }
-    var newMessage by remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsState()
+    var newComment by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     var userName by remember { mutableStateOf("") }
-
     val listState = rememberLazyListState()
 
-    LaunchedEffect(messages.size) {
-        listState.animateScrollToItem(messages.lastIndex)
+    val comments = when (uiState) {
+        is CommentUiState.Success -> (uiState as CommentUiState.Success).comments
+        else -> emptyList()
+    }
+
+    LaunchedEffect(comments.size) {
+        listState.animateScrollToItem(comments.lastIndex)
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Commentaires", style = MaterialTheme.typography.titleLarge) },
+                title = { Text("Commentaires") },
                 navigationIcon = {
                     IconButton(onClick = onBackBtnClicked) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
@@ -96,8 +169,8 @@ fun CommentScreen(
                 }
             )
         }
-    ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
+    ) { padding ->
+        Column(modifier = Modifier.padding(padding)) {
 
             LazyColumn(
                 state = listState,
@@ -108,14 +181,11 @@ fun CommentScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(bottom = 8.dp)
             ) {
-                items(messages) { message ->
-                    AnimatedVisibility(
-                        visible = true,
-                        enter = slideInVertically(initialOffsetY = { -40 }),
-                        exit = slideOutVertically(targetOffsetY = { 40 })
-                    ) {
-                        MessageCard(message)
-                    }
+                items(comments) { comment ->
+                    MessageCard(
+                        author = if (comment.userId == "Moi") "Moi" else comment.userId,
+                        message = comment.text
+                    )
                 }
             }
 
@@ -126,13 +196,12 @@ fun CommentScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextField(
-                    value = newMessage,
-                    onValueChange = { newMessage = it },
+                    value = newComment,
+                    onValueChange = { newComment = it },
                     placeholder = { Text("Saisir un commentaire...") },
                     modifier = Modifier
                         .weight(1f)
-                        .padding(end = 8.dp)
-                        .defaultMinSize(minHeight = 48.dp),
+                        .padding(end = 8.dp),
                     shape = RoundedCornerShape(50.dp),
                     colors = TextFieldDefaults.colors(
                         cursorColor = MaterialTheme.colorScheme.onSurface,
@@ -144,55 +213,37 @@ fun CommentScreen(
 
                 Button(
                     onClick = {
-                        if (newMessage.isNotBlank()) {
-                            messages.add(Message("Moi", newMessage))
-                            newMessage = ""
+                        if (newComment.isNotBlank()) {
+                            val comment = Comment(
+                                uid = UUID.randomUUID().toString(),
+                                userId = userName.ifBlank { "Moi" },
+                                text = newComment,
+                                createdAt = Date()
+                            )
+                            viewModel.sendComment(comment)
+                            newComment = ""
                         }
                     },
-                    modifier = Modifier
-                        .size(48.dp), // bouton rond
+                    modifier = Modifier.size(48.dp),
                     shape = CircleShape,
-                    contentPadding = PaddingValues(0.dp), // enlever le padding par défaut
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = Color.White
-                    )
+                    contentPadding = PaddingValues(0.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Send,
-                        contentDescription = "Envoyer",
-                        tint = Color.White
-                    )
+                    Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Envoyer", tint = Color.White)
                 }
             }
         }
     }
 }
 
-object SampleData {
-    // Sample data for a conversation
-    val conversationSample = listOf(
-        Message("Truphy", "Hi, how are you?"),
-        Message("Alex", "I'm good, thanks! How about you?"),
-        Message("Truphy", "Doing well! It's been long since I last saw you. Won't recognize you" +
-                "if we met coincidentally. Anyway,I've you tried Jetpack Compose?"),
-        Message("Alex", "Yes, it's amazing!"),
-        Message("Truphy", "I know, right?"),
-        Message("Alex", "Let's build something cool with it."),
-        Message("Truphy", "You sure?"),
-        Message("Alex", "Yes, I actually have an idea why don't we plan a meetup and talk about it."),
-        Message("Truphy", "Great, when are you free?"),
-        Message("Alex", "I guess this weekend will be fine, how about you?"),
-        Message("Truphy", "Yes definetly. Java house?"),
-        Message("Alex", "Agreed")
-    )
-}
-
-data class Message(val author: String, val body: String)
-
 @Composable
-fun MessageCard(msg: Message) {
-    val isUserMe = msg.author == "Moi"
+fun MessageCard(author: String, message: String) {
+    val isUserMe = author == "Moi"
+    var isExpanded by remember { mutableStateOf(false) }
+
+    val surfaceColor by animateColorAsState(
+        if (isExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+        label = ""
+    )
 
     Row(
         modifier = Modifier
@@ -212,26 +263,15 @@ fun MessageCard(msg: Message) {
             Spacer(modifier = Modifier.width(8.dp))
         }
 
-        var isExpanded by remember { mutableStateOf(false) }
-        val surfaceColor by animateColorAsState(
-            if (isExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
-        )
-
         Column(
             horizontalAlignment = if (isUserMe) Alignment.End else Alignment.Start,
             modifier = Modifier
                 .clickable { isExpanded = !isExpanded }
-                .widthIn(max = 280.dp) // Limite la largeur des bulles
+                .widthIn(max = 280.dp)
         ) {
             if (!isUserMe) {
-                Text(
-                    text = msg.author,
-                    color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.titleSmall
-                )
+                Text(author, style = MaterialTheme.typography.titleSmall)
             }
-
-            Spacer(modifier = Modifier.height(4.dp))
 
             Surface(
                 shape = MaterialTheme.shapes.medium,
@@ -240,8 +280,8 @@ fun MessageCard(msg: Message) {
                 modifier = Modifier.animateContentSize().padding(1.dp)
             ) {
                 Text(
-                    text = msg.body,
-                    modifier = Modifier.padding(all = 8.dp),
+                    message,
+                    modifier = Modifier.padding(8.dp),
                     color = if (isUserMe) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                     maxLines = if (isExpanded) Int.MAX_VALUE else 1,
                     style = MaterialTheme.typography.bodyMedium
@@ -250,6 +290,7 @@ fun MessageCard(msg: Message) {
         }
     }
 }
+
 @Composable
 fun UserNamePopupExample(
     showDialog: Boolean,
