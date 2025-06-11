@@ -133,7 +133,7 @@ import java.util.UUID
 @Composable
 fun CommentScreen(
     onBackBtnClicked: () -> Unit,
-    viewModel: CommentViewModel = koinViewModel() // Injecte via Koin
+    viewModel: CommentViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var newComment by remember { mutableStateOf("") }
@@ -147,8 +147,11 @@ fun CommentScreen(
     }
 
     LaunchedEffect(comments.size) {
-        listState.animateScrollToItem(comments.lastIndex)
+        if (comments.isNotEmpty()) {
+            listState.animateScrollToItem(comments.lastIndex)
+        }
     }
+
 
     Scaffold(
         topBar = {

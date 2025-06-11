@@ -11,12 +11,11 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class CommentRepositoryImpl(
-    private val firestore: FirebaseFirestore,
-    private val commentsCollection: CollectionReference = firestore.collection("comments")
+    private val firestore: FirebaseFirestore
 ) : CommentRepository {
 
     override fun getAllComment(): Flow<List<Comment>?> = callbackFlow {
-        val listenerRegistration = commentsCollection
+        val listenerRegistration = firestore.collection("comments")
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -32,14 +31,14 @@ class CommentRepositoryImpl(
     }
 
     override suspend fun sendComment(comment: Comment) {
-        commentsCollection
+        firestore.collection("comments")
             .document(comment.uid)
             .set(comment)
             .await()
     }
 
     override suspend fun deleteComment(idComment: String) {
-        commentsCollection
+        firestore.collection("comments")
             .document(idComment)
             .delete()
             .await()
