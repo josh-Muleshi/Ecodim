@@ -1,7 +1,11 @@
 package cd.wayupdotdev.ecodim.core.data.repository
 
+import cd.wayupdotdev.ecodim.core.data.remote.model.RemoteComment
+import cd.wayupdotdev.ecodim.core.data.remote.model.RemoteLesson
+import cd.wayupdotdev.ecodim.core.data.remote.model.toDomain
 import cd.wayupdotdev.ecodim.core.domain.model.Comment
 import cd.wayupdotdev.ecodim.core.domain.repository.CommentRepository
+import cd.wayupdotdev.ecodim.core.utils.FireBaseConstants
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -15,15 +19,17 @@ class CommentRepositoryImpl(
 ) : CommentRepository {
 
     override fun getAllComment(): Flow<List<Comment>?> = callbackFlow {
-        val listenerRegistration = firestore.collection("comments")
-            .orderBy("createdAt", Query.Direction.DESCENDING)
+        val listenerRegistration = firestore.collection(FireBaseConstants.comments)
+            .orderBy(RemoteComment::createdAt.name, Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     close(error)
                     return@addSnapshotListener
                 }
 
-                val comments = snapshot?.toObjects(Comment::class.java)
+                val remoteComment = snapshot?.toObjects(RemoteComment::class.java).orEmpty()
+                val comments = remoteComment.mapNotNull { it.toDomain() }
+
                 trySend(comments)
             }
 
@@ -31,14 +37,14 @@ class CommentRepositoryImpl(
     }
 
     override suspend fun sendComment(comment: Comment) {
-        firestore.collection("comments")
+        firestore.collection(FireBaseConstants.comments)
             .document(comment.uid)
             .set(comment)
             .await()
     }
 
     override suspend fun deleteComment(idComment: String) {
-        firestore.collection("comments")
+        firestore.collection(FireBaseConstants.comments)
             .document(idComment)
             .delete()
             .await()
