@@ -66,6 +66,7 @@ fun CommentScreen(
     viewModel: CommentViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val userInfo by viewModel.userInfo.collectAsState()
     var newComment by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     var userName by remember { mutableStateOf("") }
@@ -76,12 +77,21 @@ fun CommentScreen(
         else -> emptyList()
     }
 
+    LaunchedEffect(userInfo) {
+        val (name, id) = userInfo
+        if (name == null || id == null) {
+            showDialog = true
+        } else {
+            userName = name
+        }
+    }
+
+
     LaunchedEffect(comments.size) {
         if (comments.isNotEmpty()) {
             listState.animateScrollToItem(comments.lastIndex)
         }
     }
-
 
     Scaffold(
         topBar = {
@@ -97,14 +107,17 @@ fun CommentScreen(
                         showDialog = showDialog,
                         onShowDialogChange = { showDialog = it },
                         userName = userName,
-                        onUserNameChange = { userName = it }
+                        onUserNameChange = { userName = it },
+                        onConfirm = {
+                            viewModel.getOrCreateUser(userName)
+                            showDialog = false
+                        }
                     )
                 }
             )
         }
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
-
             LazyColumn(
                 state = listState,
                 modifier = Modifier
@@ -116,57 +129,62 @@ fun CommentScreen(
             ) {
                 items(comments) { comment ->
                     MessageCard(
-                        author = if (comment.userId == "Moi") "Moi" else comment.userId,
+                        author = if (comment.userId == userInfo.second) "Moi" else comment.userName,
                         message = comment.text
                     )
                 }
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                TextField(
-                    value = newComment,
-                    onValueChange = { newComment = it },
-                    placeholder = { Text("Saisir un commentaire...") },
+            // Champ actif uniquement si user est défini
+            if (userInfo.first != null && userInfo.second != null) {
+                Row(
                     modifier = Modifier
-                        .weight(1f)
-                        .padding(end = 8.dp),
-                    shape = RoundedCornerShape(50.dp),
-                    colors = TextFieldDefaults.colors(
-                        cursorColor = MaterialTheme.colorScheme.onSurface,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                    ),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 16.sp)
-                )
-
-                Button(
-                    onClick = {
-                        if (newComment.isNotBlank()) {
-                            val comment = Comment(
-                                uid = UUID.randomUUID().toString(),
-                                userId = userName.ifBlank { "Moi" },
-                                text = newComment,
-                                createdAt = Date()
-                            )
-                            viewModel.sendComment(comment)
-                            newComment = ""
-                        }
-                    },
-                    modifier = Modifier.size(48.dp),
-                    shape = CircleShape,
-                    contentPadding = PaddingValues(0.dp)
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Envoyer", tint = Color.White)
+                    TextField(
+                        value = newComment,
+                        onValueChange = { newComment = it },
+                        placeholder = { Text("Saisir un commentaire...") },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 8.dp),
+                        shape = RoundedCornerShape(50.dp),
+                        colors = TextFieldDefaults.colors(
+                            cursorColor = MaterialTheme.colorScheme.onSurface,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                        ),
+                        textStyle = LocalTextStyle.current.copy(fontSize = 16.sp)
+                    )
+
+                    Button(
+                        onClick = {
+                            if (newComment.isNotBlank()) {
+                                val comment = Comment(
+                                    uid = UUID.randomUUID().toString(),
+                                    userId = userInfo.second ?: "Inconnu",
+                                    userName = userInfo.first ?: "",
+                                    text = newComment,
+                                    createdAt = Date()
+                                )
+                                viewModel.sendComment(comment)
+                                newComment = ""
+                            }
+                        },
+                        modifier = Modifier.size(48.dp),
+                        shape = CircleShape,
+                        contentPadding = PaddingValues(0.dp)
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Envoyer", tint = Color.White)
+                    }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun MessageCard(author: String, message: String) {
@@ -229,15 +247,17 @@ fun UserNamePopupExample(
     showDialog: Boolean,
     onShowDialogChange: (Boolean) -> Unit,
     userName: String,
-    onUserNameChange: (String) -> Unit
+    onUserNameChange: (String) -> Unit,
+    onConfirm: () -> Unit
 ) {
+
     IconButton(onClick = { onShowDialogChange(true) }) {
         Icon(imageVector = Icons.Default.Person, contentDescription = null)
     }
 
     if (showDialog) {
         AlertDialog(
-            onDismissRequest = { onShowDialogChange(false) },
+            onDismissRequest = { /* Ne rien faire ici si obligatoire */ },
             title = { Text(text = "Entrez votre nom") },
             text = {
                 TextField(
@@ -247,9 +267,7 @@ fun UserNamePopupExample(
                 )
             },
             confirmButton = {
-                TextButton(onClick = {
-                    onShowDialogChange(false)
-                }) {
+                TextButton(onClick = onConfirm) {
                     Text("OK")
                 }
             },
@@ -261,3 +279,4 @@ fun UserNamePopupExample(
         )
     }
 }
+

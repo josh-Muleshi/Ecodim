@@ -8,6 +8,7 @@ import java.util.Date
 data class RemoteComment(
     val uid: String = "",
     val userId: String = "",
+    val userName: String = "",
     val text: String = "",
     val createdAt: Date = Date()
 )
@@ -16,6 +17,7 @@ fun RemoteComment.toDomain(): Comment {
     return Comment(
         uid = uid,
         userId = userId,
+        userName = userName,
         text = text,
         createdAt = createdAt
     )
