@@ -50,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cd.wayupdotdev.ecodim.R
@@ -123,7 +124,8 @@ fun CommentScreen(
                     .weight(1f)
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(bottom = 8.dp)
+                contentPadding = PaddingValues(bottom = 8.dp),
+                reverseLayout = true
             ) {
                 items(comments) { comment ->
                     MessageCard(
@@ -214,7 +216,6 @@ fun MessageCard(author: String, message: String) {
         Column(
             horizontalAlignment = if (isUserMe) Alignment.End else Alignment.Start,
             modifier = Modifier
-                .clickable { isExpanded = !isExpanded }
                 .widthIn(max = 280.dp)
         ) {
             if (!isUserMe) {
@@ -225,13 +226,17 @@ fun MessageCard(author: String, message: String) {
                 shape = MaterialTheme.shapes.medium,
                 shadowElevation = 1.dp,
                 color = if (isUserMe) MaterialTheme.colorScheme.primary else surfaceColor,
-                modifier = Modifier.animateContentSize().padding(1.dp)
+                modifier = Modifier
+                    .clickable { isExpanded = !isExpanded }
+                    .animateContentSize()
+                    .padding(1.dp)
             ) {
                 Text(
                     message,
                     modifier = Modifier.padding(8.dp),
                     color = if (isUserMe) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
-                    maxLines = if (isExpanded) Int.MAX_VALUE else 1,
+                    maxLines = if (isExpanded) Int.MAX_VALUE else 3,
+                    overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
