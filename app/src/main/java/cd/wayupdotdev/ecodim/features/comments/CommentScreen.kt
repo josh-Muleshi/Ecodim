@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -67,10 +66,14 @@ fun CommentScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val userInfo by viewModel.userInfo.collectAsState()
+    val shouldAskName by viewModel.shouldAskUserName.collectAsState()
     var newComment by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
     var userName by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
+
+    LaunchedEffect(Unit) {
+        viewModel.initializeUser()
+    }
 
     val comments = when (uiState) {
         is CommentUiState.Success -> (uiState as CommentUiState.Success).comments
@@ -78,14 +81,8 @@ fun CommentScreen(
     }
 
     LaunchedEffect(userInfo) {
-        val (name, id) = userInfo
-        if (name == null || id == null) {
-            showDialog = true
-        } else {
-            userName = name
-        }
+        userName = userInfo.first ?: ""
     }
-
 
     LaunchedEffect(comments.size) {
         if (comments.isNotEmpty()) {
@@ -104,13 +101,14 @@ fun CommentScreen(
                 },
                 actions = {
                     UserNamePopupExample(
-                        showDialog = showDialog,
-                        onShowDialogChange = { showDialog = it },
+                        showDialog = shouldAskName,
+                        onShowDialogChange = { shouldShow ->
+                            if (!shouldShow) viewModel.cancelUserPrompt()
+                        },
                         userName = userName,
                         onUserNameChange = { userName = it },
                         onConfirm = {
-                            viewModel.getOrCreateUser(userName)
-                            showDialog = false
+                            viewModel.saveUser(userName)
                         }
                     )
                 }
@@ -135,7 +133,6 @@ fun CommentScreen(
                 }
             }
 
-            // Champ actif uniquement si user est défini
             if (userInfo.first != null && userInfo.second != null) {
                 Row(
                     modifier = Modifier
@@ -250,14 +247,9 @@ fun UserNamePopupExample(
     onUserNameChange: (String) -> Unit,
     onConfirm: () -> Unit
 ) {
-
-    IconButton(onClick = { onShowDialogChange(true) }) {
-        Icon(imageVector = Icons.Default.Person, contentDescription = null)
-    }
-
     if (showDialog) {
         AlertDialog(
-            onDismissRequest = { /* Ne rien faire ici si obligatoire */ },
+            onDismissRequest = { onShowDialogChange(false) },
             title = { Text(text = "Entrez votre nom") },
             text = {
                 TextField(

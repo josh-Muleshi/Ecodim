@@ -18,33 +18,58 @@ class CommentViewModel(
     private val preferenceManager: PreferenceManager
 ) : ViewModel() {
 
+    // ────────────────────────────
+    // UI STATE
+    // ────────────────────────────
     private val _uiState = MutableStateFlow<CommentUiState>(CommentUiState.Loading)
     val uiState: StateFlow<CommentUiState> = _uiState.asStateFlow()
-
-    init {
-        getAllComments()
-    }
 
     private val _userInfo = MutableStateFlow<Pair<String?, String?>>(null to null)
     val userInfo: StateFlow<Pair<String?, String?>> = _userInfo.asStateFlow()
 
-    fun getOrCreateUser(userNameInput: String? = null) {
+    // ────────────────────────────
+    // INIT
+    // ────────────────────────────
+    init {
+        getAllComments()
+    }
+
+    // ────────────────────────────
+    // USER MANAGEMENT
+    // ────────────────────────────
+    private val _shouldAskUserName = MutableStateFlow(false)
+    val shouldAskUserName: StateFlow<Boolean> = _shouldAskUserName.asStateFlow()
+
+    fun initializeUser() {
         viewModelScope.launch {
             val savedUid = preferenceManager.getUserId()
             val savedName = preferenceManager.getUsername()
 
-            if (savedUid == null || savedName == null) {
-                val user = userRepository.getOrCreateCurrentUser(userNameInput ?: "Auteur anonyme")
-                preferenceManager.saveUserId(user.uid)
-                preferenceManager.saveUsername(user.author)
-                _userInfo.value = user.author to user.uid
-            } else {
+            if (savedUid != null && savedName != null) {
                 _userInfo.value = savedName to savedUid
+            } else {
+                _shouldAskUserName.value = true
             }
         }
     }
 
+    fun saveUser(userNameInput: String) {
+        viewModelScope.launch {
+            val user = userRepository.getOrCreateCurrentUser(userNameInput)
+            preferenceManager.saveUserId(user.uid)
+            preferenceManager.saveUsername(user.author)
+            _userInfo.value = user.author to user.uid
+            _shouldAskUserName.value = false
+        }
+    }
 
+    fun cancelUserPrompt() {
+        _shouldAskUserName.value = false
+    }
+
+    // ────────────────────────────
+    // COMMENT OPERATIONS
+    // ────────────────────────────
     private fun getAllComments() {
         viewModelScope.launch {
             commentRepository.getAllComment()
