@@ -35,7 +35,7 @@ class LessonRepositoryImpl(
             .launchIn(this)
 
         // Ensuite on écoute Firestore
-        val listener = firestore.collection(FireBaseConstants.lesson)
+        val listener = firestore.collection(FireBaseConstants.LESSONS)
             .orderBy(RemoteLesson::createdAt.name, Query.Direction.DESCENDING)
             .addSnapshotListener { value, error ->
                 if (error != null) {

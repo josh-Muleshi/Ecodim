@@ -5,6 +5,7 @@ import cd.wayupdotdev.ecodim.core.data.remote.model.toDomain
 import cd.wayupdotdev.ecodim.core.domain.model.User
 import cd.wayupdotdev.ecodim.core.domain.model.toRemote
 import cd.wayupdotdev.ecodim.core.domain.repository.UserRepository
+import cd.wayupdotdev.ecodim.core.utils.FireBaseConstants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -18,7 +19,7 @@ class UserRepositoryImpl(
     override suspend fun getOrCreateCurrentUser(author: String): User {
         val currentUser = auth.currentUser ?: auth.signInAnonymously().await().user!!
 
-        val userDoc = firestore.collection("users").document(currentUser.uid)
+        val userDoc = firestore.collection(FireBaseConstants.USERS).document(currentUser.uid)
         val snapshot = userDoc.get().await()
 
         return if (snapshot.exists()) {

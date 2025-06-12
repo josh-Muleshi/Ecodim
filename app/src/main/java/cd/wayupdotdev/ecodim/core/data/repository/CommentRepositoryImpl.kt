@@ -19,7 +19,7 @@ class CommentRepositoryImpl(
 ) : CommentRepository {
 
     override fun getAllComment(): Flow<List<Comment>?> = callbackFlow {
-        val listenerRegistration = firestore.collection(FireBaseConstants.comments)
+        val listenerRegistration = firestore.collection(FireBaseConstants.COMMENTS)
             .orderBy(RemoteComment::createdAt.name, Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -37,14 +37,14 @@ class CommentRepositoryImpl(
     }
 
     override suspend fun sendComment(comment: Comment) {
-        firestore.collection(FireBaseConstants.comments)
+        firestore.collection(FireBaseConstants.COMMENTS)
             .document(comment.uid)
             .set(comment)
             .await()
     }
 
     override suspend fun deleteComment(idComment: String) {
-        firestore.collection(FireBaseConstants.comments)
+        firestore.collection(FireBaseConstants.COMMENTS)
             .document(idComment)
             .delete()
             .await()
