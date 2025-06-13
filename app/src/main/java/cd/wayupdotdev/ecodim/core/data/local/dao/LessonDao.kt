@@ -7,8 +7,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LessonDao {
 
-    @Query("SELECT * FROM lessons")
+    @Query("SELECT * FROM lessons ORDER BY createdAt DESC")
     fun getAllLessons(): Flow<List<LessonEntity>>
+
 
     @Query("SELECT * FROM lessons WHERE isFavorite = 1 ORDER BY updatedAt DESC")
     fun getFavoriteLessons(): Flow<List<LessonEntity>>
