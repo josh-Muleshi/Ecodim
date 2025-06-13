@@ -15,10 +15,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import cd.wayupdotdev.ecodim.core.data_preferences.SettingDataStorePreferences
@@ -58,14 +60,28 @@ fun ComponentActivity.installUi() {
                         AppDrawer(
                             onCloseDrawer = { coroutineScope.launch { drawerState.close() } },
                             onMenuItemClick = { menuItem ->
-                                when (menuItem) {
-                                    "Accueil" -> navController.navigate(Destination.HomeScreen.route)
-                                    "Communautés" -> navController.navigate(Destination.CommentScreen.route)
-                                    "Favoris" -> navController.navigate(Destination.FavoriteScreen.route)
-                                    "Recherche" -> navController.navigate(Destination.SearchScreen.route)
-                                    "Paramètres" -> navController.navigate(Destination.SettingsScreen.route)
-                                    "Aide & Support" -> println("Navigation vers Aide & Support")
+                                val route = when (menuItem) {
+                                    "Accueil" -> Destination.HomeScreen.route
+                                    "Communautés" -> Destination.CommentScreen.route
+                                    "Favoris" -> Destination.FavoriteScreen.route
+                                    "Recherche" -> Destination.SearchScreen.route
+                                    "Paramètres" -> Destination.SettingsScreen.route
+                                    "Aide & Support" -> null // Pour debug ou future implémentation
+                                    else -> null
                                 }
+
+                                route?.let {
+                                    if (navController.currentDestination?.route != it) {
+                                        navController.navigate(it) {
+                                            popUpTo(navController.graph.startDestinationId) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    }
+                                }
+
                                 coroutineScope.launch { drawerState.close() }
                             }
                         )
@@ -74,16 +90,19 @@ fun ComponentActivity.installUi() {
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                         bottomBar = {
-                            AnimatedVisibility(
-                                visible = shouldShowBottomNavigation(destination),
-                                enter = slideInVertically { it / 2 },
-                                exit = slideOutVertically { it / 2 },
-                            ) {
-                                BottomNavigationBar(
-                                    navController = navController,
-                                    destination = destination
-                                )
+                            key(destination?.route) {
+                                AnimatedVisibility(
+                                    visible = shouldShowBottomNavigation(destination),
+                                    enter = slideInVertically { it / 2 },
+                                    exit = slideOutVertically { it / 2 },
+                                ) {
+                                    BottomNavigationBar(
+                                        navController = navController,
+                                        destination = destination
+                                    )
+                                }
                             }
+
                         }
                     ) { paddingValues ->
                         AppNavHost(
@@ -105,8 +124,10 @@ fun ComponentActivity.installUi() {
 }
 
 private fun shouldShowBottomNavigation(destination: NavDestination?): Boolean {
-    return !destination.isCurrent(Destination.TopicDetailScreen)
-            && !destination.isCurrent(Destination.SettingsScreen)
-            && !destination.isCurrent(Destination.CommentScreen)
-            && !destination.isCurrent(Destination.SearchScreen)
+    return destination?.hierarchy?.none {
+        it.route == Destination.TopicDetailScreen.route ||
+                it.route == Destination.SettingsScreen.route ||
+                it.route == Destination.CommentScreen.route ||
+                it.route == Destination.SearchScreen.route
+    } == true
 }

@@ -12,6 +12,9 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -32,12 +35,20 @@ val topLevelRoutes = listOf(
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController, destination: NavDestination?) {
+    val currentRoute by remember(destination) {
+        derivedStateOf {
+            destination?.hierarchy?.mapNotNull { it.route }.orEmpty()
+        }
+    }
+
     NavigationBar {
         topLevelRoutes.forEach { route ->
+            val isSelected = route.route in currentRoute
+
             NavigationBarItem(
-                selected = destination.isCurrent(route.route),
+                selected = isSelected,
                 onClick = {
-                    if (!destination.isCurrent(route.route)) {
+                    if (!isSelected) {
                         navController.navigate(route.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
                                 inclusive = false
@@ -50,22 +61,14 @@ fun BottomNavigationBar(navController: NavHostController, destination: NavDestin
                 },
                 label = { Text(text = route.name) },
                 icon = {
-                    val icon = if (destination.isCurrent(route.route)) {
-                        route.icon
-                    } else {
-                        when (route) {
-                            is TopLevelRoute.HomeScreen -> Icons.Outlined.Home
-                            is TopLevelRoute.FavoriteScreen -> Icons.Outlined.BookmarkBorder
-                            is TopLevelRoute.AboutScreen -> Icons.Outlined.Info
-                        }
+                    val icon = if (isSelected) route.icon else when (route) {
+                        is TopLevelRoute.HomeScreen -> Icons.Outlined.Home
+                        is TopLevelRoute.FavoriteScreen -> Icons.Outlined.BookmarkBorder
+                        is TopLevelRoute.AboutScreen -> Icons.Outlined.Info
                     }
                     Icon(imageVector = icon, contentDescription = route.name)
                 }
             )
         }
     }
-}
-
-fun NavDestination?.isCurrent(route: String): Boolean {
-    return this?.hierarchy?.any { it.route == route } == true
 }

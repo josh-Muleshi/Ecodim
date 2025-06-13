@@ -52,7 +52,6 @@ fun AppDrawer(
     }
 }
 
-
 @Composable
 fun DrawerContent(
     onCloseDrawer: () -> Unit,
