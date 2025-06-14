@@ -27,7 +27,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -109,17 +109,17 @@ dependencies {
     implementation (libs.kotlinx.coroutines.play.services)
     implementation (libs.androidx.core.splashscreen)
 
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
-    implementation ("io.coil-kt:coil-compose:2.2.2")
-    implementation ("com.google.accompanist:accompanist-pager:0.29.0-alpha")
-    implementation ("com.google.accompanist:accompanist-pager-indicators:0.29.0-alpha")
+    implementation (libs.coil.compose)
+    implementation (libs.accompanist.pager)
+    implementation (libs.accompanist.pager.indicators)
 
-    implementation ("com.airbnb.android:lottie-compose:6.0.0")
+    implementation (libs.lottie.compose)
 
 //    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
-    implementation ("com.github.jeziellago:compose-markdown:0.5.7")
+    implementation (libs.compose.markdown)
 }
