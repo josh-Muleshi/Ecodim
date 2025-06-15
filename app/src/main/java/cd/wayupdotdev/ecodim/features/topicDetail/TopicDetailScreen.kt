@@ -102,7 +102,7 @@ fun TopicDetailScreen(
                     markdown = lesson.content,
                     fontResource = R.font.montserrat_medium,
                     style = TextStyle(
-                        color = Color.Blue,
+                        color = Color.Black,
                         fontSize = scaledFontSize,
                         lineHeight = (scaledFontSize.value + 2).sp,
                         textAlign = TextAlign.Justify,
