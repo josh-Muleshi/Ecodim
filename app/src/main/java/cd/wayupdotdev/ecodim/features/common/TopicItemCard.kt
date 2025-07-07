@@ -1,14 +1,19 @@
 package cd.wayupdotdev.ecodim.features.common
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -31,17 +36,40 @@ fun TopicCard(lesson: Lesson, onTopicItemClicked: () -> Unit) {
         border = BorderStroke(0.5.dp, color = MaterialTheme.colorScheme.outline),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        MarkdownText(
-            modifier = Modifier.padding(8.dp),
-            markdown = lesson.content,
-            maxLines = 10,
-            fontResource = R.font.montserrat_medium,
-            style = TextStyle(
-                color = Color.Black,
-                fontSize = 12.sp,
-                lineHeight = 10.sp,
-                textAlign = TextAlign.Justify,
-            ),
-        )
+        Box(modifier = Modifier.fillMaxWidth()) {
+            MarkdownText(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                markdown = lesson.content,
+                maxLines = 10,
+                fontResource = R.font.montserrat_medium,
+                style = TextStyle(
+                    color = Color.Black,
+                    fontSize = 12.sp,
+                    lineHeight = 10.sp,
+                    textAlign = TextAlign.Justify,
+                ),
+            )
+
+            if (lesson.week) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(16.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(topStart = 15.dp, bottomStart = 15.dp, bottomEnd = 15.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = "Semaine",
+                        color = Color.White,
+                        fontSize = 10.sp,
+                    )
+                }
+            }
+        }
     }
 }

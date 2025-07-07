@@ -1,7 +1,6 @@
 package cd.wayupdotdev.ecodim.features.about
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cd.wayupdotdev.ecodim.R
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -103,7 +103,7 @@ fun AboutScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Version 1.0.0",
+                text = "Version 1.0.1",
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center
             )
@@ -140,7 +140,7 @@ fun AboutScreen(
                 IconButton(
                     onClick = {
                         val githubUrl = "https://github.com/josh-Muleshi/Ecodim"
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(githubUrl))
+                        val intent = Intent(Intent.ACTION_VIEW, githubUrl.toUri())
                         context.startActivity(intent)
                     }
                 ) {
@@ -154,7 +154,7 @@ fun AboutScreen(
                 IconButton(
                     onClick = {
                         val playStoreUrl = "https://play.google.com/store/apps/details?id=ton.package.name"
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(playStoreUrl))
+                        val intent = Intent(Intent.ACTION_VIEW, playStoreUrl.toUri())
                         context.startActivity(intent)
                     }
                 ) {
