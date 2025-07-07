@@ -60,8 +60,7 @@ fun DrawerContent(
     val menuItems = listOf(
         "Accueil" to Icons.Outlined.Home,
         "Communautés" to Icons.AutoMirrored.Outlined.Comment,
-        "Favoris" to Icons.Outlined.StarOutline,
-        "Recherche" to Icons.Outlined.Search
+        "Favoris" to Icons.Outlined.StarOutline
     )
 
     Column(

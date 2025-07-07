@@ -64,9 +64,8 @@ fun ComponentActivity.installUi() {
                                     "Accueil" -> Destination.HomeScreen.route
                                     "Communautés" -> Destination.CommentScreen.route
                                     "Favoris" -> Destination.FavoriteScreen.route
-                                    "Recherche" -> Destination.SearchScreen.route
                                     "Paramètres" -> Destination.SettingsScreen.route
-                                    "Aide & Support" -> null // Pour debug ou future implémentation
+                                    "Aide & Support" -> null
                                     else -> null
                                 }
 

@@ -11,7 +11,6 @@ import cd.wayupdotdev.ecodim.features.comments.CommentScreen
 import cd.wayupdotdev.ecodim.features.favorite.FavoriteScreen
 import cd.wayupdotdev.ecodim.features.home.HomeScreen
 import cd.wayupdotdev.ecodim.features.home.HomeViewModel
-import cd.wayupdotdev.ecodim.features.search.SearchScreen
 import cd.wayupdotdev.ecodim.features.setting.SettingScreen
 import cd.wayupdotdev.ecodim.features.topicDetail.TopicDetailScreen
 import org.koin.androidx.compose.koinViewModel
@@ -33,7 +32,6 @@ fun AppNavHost(
         composable(route = Destination.HomeScreen.route) {
             HomeScreen (
                 drawerState = drawerState,
-                //onSearchBtnClicked = { navController.navigate(Destination.SearchScreen.route) },
                 onTopicItemClicked = { topicUid ->
                     navController.navigate(Destination.TopicDetailScreen.createRoute(
                         topicUid = topicUid
@@ -85,18 +83,6 @@ fun AppNavHost(
                         topicUid = topicUid
                     ))
                 }
-            )
-        }
-
-        composable(route = Destination.SearchScreen.route) {
-            SearchScreen (
-                lessons = viewModel.lessons,
-                onBackBtnClicked = { navController.navigateUp()  },
-                onTopicItemClicked = { topicUid ->
-                    navController.navigate(Destination.TopicDetailScreen.createRoute(
-                        topicUid = topicUid
-                    ))
-                },
             )
         }
     }
