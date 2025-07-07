@@ -45,7 +45,6 @@ fun TopicCard(lesson: Lesson, onTopicItemClicked: () -> Unit) {
                 maxLines = 10,
                 fontResource = R.font.montserrat_medium,
                 style = TextStyle(
-                    color = Color.Black,
                     fontSize = 12.sp,
                     lineHeight = 10.sp,
                     textAlign = TextAlign.Justify,
