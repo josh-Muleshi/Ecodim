@@ -264,7 +264,10 @@ fun UserNamePopupExample(
                 )
             },
             confirmButton = {
-                TextButton(onClick = onConfirm) {
+                TextButton(
+                    onClick = onConfirm,
+                    enabled = userName.isNotBlank()
+                ) {
                     Text("OK")
                 }
             },
@@ -276,4 +279,5 @@ fun UserNamePopupExample(
         )
     }
 }
+
 
