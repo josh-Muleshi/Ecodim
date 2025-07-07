@@ -9,6 +9,7 @@ data class LessonEntity(
     val userId: String,
     val content: String,
     val createdAt: Long,
+    val week: Boolean,
     val updatedAt: Long,
     val isFavorite: Boolean = false
 )

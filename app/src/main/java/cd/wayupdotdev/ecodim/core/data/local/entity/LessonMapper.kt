@@ -7,6 +7,7 @@ fun LessonEntity.toDomain(): Lesson = Lesson(
     uid = id,
     userId = userId,
     content = content,
+    week = week,
     createdAt = Date(createdAt),
     updatedAt = Date(updatedAt)
 )
@@ -16,6 +17,7 @@ fun Lesson.toEntity(isFavorite: Boolean = false): LessonEntity =
         id = uid,
         userId = userId,
         content = content,
+        week = week,
         createdAt = createdAt.time,
         updatedAt = updatedAt.time,
         isFavorite = isFavorite
