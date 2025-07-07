@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Search
@@ -31,12 +32,17 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,13 +61,14 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeScreen(
     modifier: Modifier = Modifier,
     drawerState: DrawerState,
-    onSearchBtnClicked: () -> Unit,
     onTopicItemClicked: (String) -> Unit,
     onSettingClicked: () -> Unit,
     viewModel: HomeViewModel
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
     val context = LocalContext.current
+
+    var searchQuery by remember { mutableStateOf("") }
 
     BackHandler {
         (context as? Activity)?.finish()
@@ -73,7 +80,6 @@ fun HomeScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                modifier = Modifier,
                 title = {
                     Box(
                         modifier = Modifier.fillMaxWidth(),
@@ -90,30 +96,14 @@ fun HomeScreen(
                     IconButton(
                         onClick = {
                             coroutineScope.launch { drawerState.open() }
-                        },
-                        modifier = modifier,
-                        colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = Color.Transparent
-                        )
+                        }
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = null
-                        )
+                        Icon(Icons.Default.Menu, contentDescription = null)
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = { onSettingClicked() },
-                        modifier = modifier,
-                        colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = Color.Transparent
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = null
-                        )
+                    IconButton(onClick = { onSettingClicked() }) {
+                        Icon(Icons.Default.Settings, contentDescription = null)
                     }
                 }
             )
@@ -126,48 +116,83 @@ fun HomeScreen(
                 .padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Search Box
+            // ✅ Search Field intégré
             item {
-                Box(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(4.dp))
-                        .border(
-                            1.dp,
-                            MaterialTheme.colorScheme.outline,
-                            RoundedCornerShape(4.dp)
-                        )
-                        .background(MaterialTheme.colorScheme.surface)
-                        .clickable { onSearchBtnClicked() }
-                        .padding(16.dp),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Search,
-                            contentDescription = "Search",
-                            tint = Color.Gray
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
+                TextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = {
                         Text(
                             text = "Rechercher...",
                             color = Color.Gray,
                             style = MaterialTheme.typography.bodyMedium
                         )
-                    }
-                }
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Search,
+                            contentDescription = "Search",
+                            tint = Color.Gray
+                        )
+                    },
+                    trailingIcon = {
+                        if (searchQuery.isNotEmpty()) {
+                            IconButton(onClick = { searchQuery = "" }) {
+                                Icon(Icons.Default.Close, contentDescription = "Effacer")
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline,
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(MaterialTheme.colorScheme.surface),
+                    singleLine = true,
+                    shape = RoundedCornerShape(4.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        cursorColor = MaterialTheme.colorScheme.onSurface
+                    ),
+                    textStyle = MaterialTheme.typography.bodyMedium
+                )
             }
 
             if (homeUiState is HomeUiState.Success) {
-                val lessons = (homeUiState as? HomeUiState.Success)?.lessons ?: emptyList()
+                val lessons = (homeUiState as HomeUiState.Success).lessons
 
-                items(lessons) { lesson ->
-                    TopicCard(lesson = lesson, onTopicItemClicked = {
-                        onTopicItemClicked(lesson.uid)
-                    })
+                val filteredLessons = if (searchQuery.isEmpty()) {
+                    lessons
+                } else {
+                    lessons.filter {
+                        it.content.contains(searchQuery, ignoreCase = true)
+                    }
+                }
+
+                if (filteredLessons.isEmpty()) {
+                    item {
+                        Text(
+                            text = "Aucun résultat trouvé.",
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                } else {
+                    items(filteredLessons) { lesson ->
+                        TopicCard(lesson = lesson) {
+                            onTopicItemClicked(lesson.uid)
+                        }
+                    }
                 }
             }
         }
@@ -179,7 +204,7 @@ fun HomeScreen(
 private fun HomePrev() {
     HomeScreen(
         drawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
-        onSearchBtnClicked = {},
+        //onSearchBtnClicked = {},
         onTopicItemClicked= {},
         onSettingClicked = {},
         viewModel = koinViewModel()

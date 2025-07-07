@@ -33,7 +33,7 @@ fun AppNavHost(
         composable(route = Destination.HomeScreen.route) {
             HomeScreen (
                 drawerState = drawerState,
-                onSearchBtnClicked = { navController.navigate(Destination.SearchScreen.route) },
+                //onSearchBtnClicked = { navController.navigate(Destination.SearchScreen.route) },
                 onTopicItemClicked = { topicUid ->
                     navController.navigate(Destination.TopicDetailScreen.createRoute(
                         topicUid = topicUid
